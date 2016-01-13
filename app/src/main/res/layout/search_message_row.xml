@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/face"
+        android:layout_alignParentLeft="true"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_face_black_36dp"/>
+    <TextView
+        android:id="@+id/sms_label"
+        style="@style/PrimaryText"
+        android:layout_toRightOf="@+id/face"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingTop="7dp"
+        android:layout_height="30dp"
+        android:text="@string/sms_label"/>
+
+    <TextView
+        android:id="@+id/sms_text"
+        style="@style/SecondaryText"
+        android:layout_toRightOf="@+id/face"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/sms_label"
+        android:layout_width="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingBottom="7dp"
+        android:layout_height="30dp"
+        android:text="@string/message"/>
+</RelativeLayout>
