@@ -22,10 +22,14 @@ import java.util.List;
  */
 public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
     Context mContext;
+    SmsAdapter mSmsAdapter;
     public static final String QUERY_KEY = "query";
     public static final String TAG = "SmsLoaderCallbacks";
 
-    public SmsLoaderCallbacks(Context context) { mContext = context; }
+    public SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter) {
+        this.mContext = mContext;
+        this.mSmsAdapter = mSmsAdapter;
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderIndex, Bundle args) {
@@ -54,6 +58,7 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
             Log.i(TAG, "zero elements in cursor");
             return;
         }
+        mSmsAdapter.swapCursor(cursor);
         /*String[] array = cursor.getColumnNames();
         int id = cursor.getColumnIndex("_id");
         int adress = cursor.getColumnIndex("address");
@@ -79,6 +84,10 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        // For whatever reason, the Loader's data is now unavailable.
+        // Remove any references to the old data by replacing it with
+        // a null Cursor.
+        mSmsAdapter.swapCursor(null);
     }
 
 

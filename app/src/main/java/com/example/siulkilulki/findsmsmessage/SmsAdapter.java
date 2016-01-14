@@ -2,6 +2,7 @@ package com.example.siulkilulki.findsmsmessage;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,13 @@ public class SmsAdapter extends ResourceCursorAdapter {
         //Gets data stored in cursor
         String author = cursor.getString(cursor.getColumnIndex("address"));
         String body = cursor.getString(cursor.getColumnIndex("body"));
-
+        Log.i("SmsAdapter",author+" | "+ body);
         //Sets element we wanted to populate
+
         authorText.setText(author);
         bodyText.setText(body);
+
+
 
 
     }
