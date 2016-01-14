@@ -5,24 +5,23 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by siulkilulki on 12.01.16.
  */
 public class SmsProvider {
-    // Create Inbox box URI
-    /*public Cursor InboxProvider(Context context){
-        Uri inboxURI = Uri.parse("content://sms/inbox");
+    private static List<Sms> smses = new ArrayList<>();
+    public SmsProvider(Context context, List<Sms> smsList) {
+        this.smses = smsList;
+    }
 
-        // List required columns
-        String[] reqCols = new String[] { "_id", "address", "body" };
+    public List<Sms> getSmses() {
+        return smses;
+    }
 
-        // Get Content Resolver object, which will deal with Content Provider
-        ContentResolver cr = context.getContentResolver();
-
-        // Fetch Inbox SMS Message from Built-in Content Provider
-        Cursor c = cr.query(inboxURI, null, null, null, null);
-
-    }*/
-
-
+    public void setSmses(List<Sms> smses) {
+        this.smses = smses;
+    }
 }

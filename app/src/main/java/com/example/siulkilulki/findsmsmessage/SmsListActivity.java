@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.Toast;
 
 
@@ -28,5 +29,8 @@ public class SmsListActivity extends AppCompatActivity {
         //an object that will handle all callbacks.
         getLoaderManager().restartLoader(SMS_QUERY_LOADER, bundle, loaderCallbacks);
 
+    }
+    private void initializeList() {
+        ListView list = (ListView) findViewById(R.id.queried_message_list);
     }
 }
