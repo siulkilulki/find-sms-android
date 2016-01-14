@@ -14,19 +14,46 @@
 
     <TextView
         android:id="@+id/search_label"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="@string/input_search_label"
         android:gravity="center"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        />
 
     <EditText android:id="@+id/search_input"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_alignParentTop="@id/search_label"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignStart="@+id/search_label"
+        android:layout_alignEnd="@+id/search_label" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inbox"
+        android:textOn="Yes"
+        android:textOff="No"
+        android:id="@+id/inbox_switch"
+        android:layout_marginTop="44dp"
+        android:layout_below="@+id/search_input"
+        android:layout_alignStart="@+id/search_input"
+        android:layout_alignEnd="@+id/search_input" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sent"
+        android:textOn="Yes"
+        android:textOff="No"
+        android:id="@+id/sent_switch"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/inbox_switch"
+        android:layout_alignStart="@+id/inbox_switch"
+        android:layout_alignEnd="@+id/inbox_switch" />
 
 </RelativeLayout>
 

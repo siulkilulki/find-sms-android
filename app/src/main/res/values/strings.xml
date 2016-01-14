@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">FindSmsMessage</string>
     <string name="action_settings">Settings</string>
-    <string name="input_search_label">Wpisz szukaną frazę</string>
-    <string name="sms_label">Justyna Tomaszewska</string>
-    <string name="message">Tutaj Justynka, hejka mój kochany!!!</string>
+    <string name="input_search_label">Search for</string>
 </resources>

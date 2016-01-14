@@ -28,16 +28,12 @@ public class SmsAdapter extends ResourceCursorAdapter {
         //Gets data stored in cursor
         String author = cursor.getString(cursor.getColumnIndex("address"));
         String body = cursor.getString(cursor.getColumnIndex("body"));
-        Log.i("SmsAdapter",author+" | "+ body);
-        //Sets element we wanted to populate
+        //Log.i("SmsAdapter",author+" | "+ body);
 
+        //Sets element we wanted to populate
         authorText.setText(author);
         bodyText.setText(body);
 
-
-
-
     }
-
 
 }

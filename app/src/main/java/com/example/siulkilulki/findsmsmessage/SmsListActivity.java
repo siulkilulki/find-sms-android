@@ -1,10 +1,13 @@
 package com.example.siulkilulki.findsmsmessage;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,12 +23,14 @@ public class SmsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.queried_message_list);
         Intent intent = getIntent();
-        String query = intent.getStringExtra(MainActivity.PHRASE_KEY);
+
+
         // Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
 
         // Bundle containg query string
+        String[] bundleData = intent.getStringArrayExtra(MainActivity.PHRASE_KEY);
         Bundle bundle = new Bundle();
-        bundle.putString(QUERY_KEY, query);
+        bundle.putStringArray(QUERY_KEY, bundleData);
 
         // Initialize the adapter
         // we pass a 'null' Cursor as the
@@ -38,6 +43,13 @@ public class SmsListActivity extends AppCompatActivity {
         // Associate the (now empty) adapter with the ListView.
         ListView listView = (ListView) findViewById(R.id.queried_message_list);
         listView.setAdapter(mSmsAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor c = (Cursor) mSmsAdapter.getItem(position);
+                Toast.makeText(SmsListActivity.this, c.getString(c.getColumnIndex("body")), Toast.LENGTH_LONG).show();
+            }
+        });
 
         //create SmsLoaderCallbacks instantion
         SmsLoaderCallbacks loaderCallbacks = new SmsLoaderCallbacks(this, mSmsAdapter);
@@ -49,5 +61,8 @@ public class SmsListActivity extends AppCompatActivity {
     }
     private void initializeList() {
         ListView list = (ListView) findViewById(R.id.queried_message_list);
+    }
+    private void showConversation(Sms sms) {
+
     }
 }

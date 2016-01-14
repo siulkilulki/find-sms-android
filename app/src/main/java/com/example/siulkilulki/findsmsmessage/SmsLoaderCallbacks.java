@@ -25,7 +25,8 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
     SmsAdapter mSmsAdapter;
     public static final String QUERY_KEY = "query";
     public static final String TAG = "SmsLoaderCallbacks";
-
+    private final int switchesState = 0;
+    private final int searchPhrase = 1;
     public SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter) {
         this.mContext = mContext;
         this.mSmsAdapter = mSmsAdapter;
@@ -33,11 +34,25 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderIndex, Bundle args) {
-        String query = args.getString(QUERY_KEY);
-
+        String[] bundleData = args.getStringArray(QUERY_KEY);
+        String query = bundleData[searchPhrase];
         // BEGIN_INCLUDE(uri_with_query)
-        Uri inboxUri = Uri.parse("content://sms/inbox");
+        Uri uri;
+        switch (bundleData[switchesState]) {
+            case ("both"):
+                uri = Uri.parse("content://sms");
+                break;
+            case ("inbox"):
+                uri = Uri.parse("content://sms/inbox");
+                break;
+            case ("sent"):
+                uri = Uri.parse("content://sms/sent");
+                break;
+            default:
+                uri = Uri.parse("content://sms");
+        }
         //Uri uri = Uri.withAppendedPath(inboxUri, query); content://sms/"inbox lub sent"
+        Log.i(TAG,uri.toString());
         String selection = "body LIKE ?";
         String[] selectionArgs = {"%"+query+"%"};
         // END_INCLUDE(uri_with_query)
@@ -46,8 +61,8 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
        String[] projection = {"_id","address","date","date_sent", "body"};
         return new CursorLoader(
             mContext,   // Context
-            inboxUri,   // URI representing the table/resource to be queried
-            projection,       // projection - the list of columns to return.  Null means "all"
+            uri,   // URI representing the table/resource to be queried
+            null,       // projection - the list of columns to return.  Null means "all"
             selection,       // selection - Which rows to return (condition rows must match)
             selectionArgs,       // selection args - can be provided separately and subbed into selection.
             null);      // string specifying sort order
