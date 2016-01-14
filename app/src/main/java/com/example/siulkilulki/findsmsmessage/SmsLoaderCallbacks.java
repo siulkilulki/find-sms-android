@@ -33,19 +33,23 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderIndex, Bundle args) {
-        // BEGIN_INCLUDE(uri_with_query)
         String query = args.getString(QUERY_KEY);
+
+        // BEGIN_INCLUDE(uri_with_query)
         Uri inboxUri = Uri.parse("content://sms/inbox");
         //Uri uri = Uri.withAppendedPath(inboxUri, query); content://sms/"inbox lub sent"
+        String selection = "body LIKE ?";
+        String[] selectionArgs = {"%"+query+"%"};
         // END_INCLUDE(uri_with_query)
+
         Log.i(TAG, ("i am in onCreateLoader"));
        String[] projection = {"_id","address","date","date_sent", "body"};
         return new CursorLoader(
             mContext,   // Context
             inboxUri,   // URI representing the table/resource to be queried
-            null,       // projection - the list of columns to return.  Null means "all"
-            null,       // selection - Which rows to return (condition rows must match)
-            null,       // selection args - can be provided separately and subbed into selection.
+            projection,       // projection - the list of columns to return.  Null means "all"
+            selection,       // selection - Which rows to return (condition rows must match)
+            selectionArgs,       // selection args - can be provided separately and subbed into selection.
             null);      // string specifying sort order
         // END_INCLUDE(cursor_loader)
 
