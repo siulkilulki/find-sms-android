@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private final int searchPhrase = 1;
     private boolean inboxSwitchState = true; //starting values
     private boolean sentSwitchState = false; //starting values
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
         final Switch inboxSwitch = (Switch) findViewById(R.id.inbox_switch);
         final Switch sentSwitch = (Switch) findViewById(R.id.sent_switch);
         inboxSwitch.setChecked(true);
-        //final boolean[] inboxSwitchState = {true};
-        //final boolean[] sentSwitchState = {false};
 
         inboxSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

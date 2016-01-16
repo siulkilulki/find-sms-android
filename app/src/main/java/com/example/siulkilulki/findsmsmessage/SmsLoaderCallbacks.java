@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,8 +26,7 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
     SmsAdapter mSmsAdapter;
     public static final String QUERY_KEY = "query";
     public static final String TAG = "SmsLoaderCallbacks";
-    private final int switchesState = 0;
-    private final int searchPhrase = 1;
+
     public SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter) {
         this.mContext = mContext;
         this.mSmsAdapter = mSmsAdapter;
@@ -35,38 +35,16 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
     @Override
     public Loader<Cursor> onCreateLoader(int loaderIndex, Bundle args) {
         String[] bundleData = args.getStringArray(QUERY_KEY);
-        String query = bundleData[searchPhrase];
-        // BEGIN_INCLUDE(uri_with_query)
-        Uri uri;
-        switch (bundleData[switchesState]) {
-            case ("both"):
-                uri = Uri.parse("content://sms");
-                break;
-            case ("inbox"):
-                uri = Uri.parse("content://sms/inbox");
-                break;
-            case ("sent"):
-                uri = Uri.parse("content://sms/sent");
-                break;
-            default:
-                uri = Uri.parse("content://sms");
-        }
-        //Uri uri = Uri.withAppendedPath(inboxUri, query); content://sms/"inbox lub sent"
-        Log.i(TAG,uri.toString());
-        String selection = "body LIKE ?";
-        String[] selectionArgs = {"%"+query+"%"};
-        // END_INCLUDE(uri_with_query)
-
-        Log.i(TAG, ("i am in onCreateLoader"));
-       String[] projection = {"_id","address","date","date_sent", "body"};
-        return new CursorLoader(
+        Log.i(TAG, "In onCreateLoader");
+        return new SmsMmsCursorLoader(mContext, bundleData);
+        /*return new CursorLoader(
             mContext,   // Context
             uri,   // URI representing the table/resource to be queried
-            null,       // projection - the list of columns to return.  Null means "all"
+            projection,       // projection - the list of columns to return.  Null means "all"
             selection,       // selection - Which rows to return (condition rows must match)
             selectionArgs,       // selection args - can be provided separately and subbed into selection.
             null);      // string specifying sort order
-        // END_INCLUDE(cursor_loader)
+        // END_INCLUDE(cursor_loader)*/
 
     }
 
@@ -78,26 +56,6 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
             return;
         }
         mSmsAdapter.swapCursor(cursor);
-        /*String[] array = cursor.getColumnNames();
-        int id = cursor.getColumnIndex("_id");
-        int adress = cursor.getColumnIndex("address");
-        int date = cursor.getColumnIndex("date");
-        int date_sent = cursor.getColumnIndex("date_sent");
-        int body = cursor.getColumnIndex("body");
-        cursor.moveToFirst();
-        List<Sms> smses = new ArrayList<>();
-        do {
-            Sms sms = new Sms(
-                    cursor.getInt(id),
-                    cursor.getString(adress),
-                    cursor.getString(date),
-                    cursor.getString(date_sent),
-                    cursor.getString(body)
-                    );
-            smses.add(sms);
-        } while (cursor.moveToNext());*/
-
-
 
     }
 

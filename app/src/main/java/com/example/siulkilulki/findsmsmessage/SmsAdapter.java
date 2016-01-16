@@ -9,10 +9,12 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by siulkilulki on 14.01.16.
  */
+
 public class SmsAdapter extends ResourceCursorAdapter {
 
     public SmsAdapter(Context context, int layout, Cursor c, int flags) {
