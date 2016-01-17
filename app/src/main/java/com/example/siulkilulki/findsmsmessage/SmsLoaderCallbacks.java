@@ -4,6 +4,7 @@ package com.example.siulkilulki.findsmsmessage;
  * Created by siulkilulki on 13.01.16.
  */
 
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
@@ -48,6 +49,9 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<SmsBund
         Log.i(TAG, (String.valueOf(mSmsBundle.list.size())));
         if (mSmsBundle.list.size() == 0) {
             Log.i(TAG, "zero elements in mSmsBundle");
+            // if no results (SmsBundle list empty) change layout to no_results_view.xml
+            Activity a = (Activity) mContext;
+            a.setContentView(R.layout.no_results_view);
             return;
         }
         mSmsAdapter.setData(mSmsBundle);//swapCursor(mSmsBundle);

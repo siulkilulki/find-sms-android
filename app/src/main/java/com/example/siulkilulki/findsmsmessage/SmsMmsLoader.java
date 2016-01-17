@@ -19,10 +19,6 @@ import java.util.ArrayList;
  */
 
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // TODO: don't perform query when screen rotates, but reuse existing data
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
     private static final String TAG = "SmsMmsLoader";
     private static final String mmsTag = "mmsQuery";
@@ -44,6 +40,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
         Log.d(TAG, "Constructor fired");
         onContentChanged();
     }
+
     /**
      * Called on a worker thread to perform the actual load and to return
      * the result of the load operation.
@@ -72,9 +69,10 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
                 smsUri = Uri.parse("content://sms");// never goes here
         }
         //Uri uri = Uri.withAppendedPath(inboxUri, query); content://sms/"inbox lub sent"
-        Cursor smsCursor = smsQuery(smsUri, query);
+        CursorDataProviders dataProvider = new CursorDataProviders(mContext);
+        Cursor smsCursor = dataProvider.smsQuery(smsUri, query);
         //Cursor mmsCursor = mmsQuery(mmsUri, query);
-        //Cursor contactsCursor = getContacts();
+        Cursor contactsCursor = dataProvider.getContacts();
 
         mSmsBundle = new SmsBundle();
         if (smsCursor.getCount() != 0) {
@@ -96,51 +94,6 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
         }
 
         return mSmsBundle;
-    }
-    private Cursor getContacts() {
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection    = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER};
-
-        Cursor people = mContext.getContentResolver().query(uri, projection, null, null, null);
-        int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-        int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-        people.moveToFirst();
-        do {
-            String name   = people.getString(indexName);
-            String number = people.getString(indexNumber);
-            Log.d(TAG, name +" "+number);
-            // Do work...
-        } while (people.moveToNext());
-        return people;
-    }
-    private Cursor mmsQuery(Uri uri, String query) {
-
-        Cursor mmsCursor = mContext.getContentResolver().query(uri, null, null, null, null);
-        //Log.i(mmsTag, String.valueOf(mmsCursor.getCount()));
-        String[] columnNames = mmsCursor.getColumnNames();
-
-        for (String str : columnNames
-             ) {
-            Log.i(mmsTag,str);
-        }
-        mmsCursor.moveToFirst();
-        do {
-            //Log.i("mms",mmsCursor.);
-        } while (mmsCursor.moveToNext());
-        return mmsCursor;
-    }
-    private Cursor smsQuery(Uri uri, String query) {
-        Log.i(TAG,uri.toString());
-        String selection = "body LIKE ?";
-        String[] selectionArgs = {"%"+query+"%"};
-        // END_INCLUDE(uri_with_query)
-
-        Log.i(TAG, ("i am in onCreateLoader"));
-        String[] projection = {"_id","address","date","date_sent", "body"};
-        Cursor smsCursor = mContext.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-        return smsCursor;
     }
 
     /**

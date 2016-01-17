@@ -34,12 +34,6 @@ public class SmsAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        Log.d(TAG, "Get Count fired");
-        /*if (mSmsBundle == null)
-            return 0;
-        if (mSmsBundle.list == null)
-            return 0;*/
-        Log.d(TAG, "Get Count == " + String.valueOf(mSmsBundle.list.size()));
         return mSmsBundle.list.size();
     }
 
@@ -56,7 +50,7 @@ public class SmsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        Log.d(TAG, "getView fired");
+        //Log.d(TAG, "getView fired");
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.queried_message_row, parent, false);
             holder = new ViewHolder();
@@ -67,12 +61,12 @@ public class SmsAdapter extends BaseAdapter {
             // Reuse old views
             holder = (ViewHolder) convertView.getTag();
         }
-        Log.d(TAG, String.valueOf(position));
+        //Log.d(TAG, String.valueOf(position));
         bindSmsToView(holder, getItem(position));
         return convertView;
     }
     private void bindSmsToView(ViewHolder holder, Sms sms){
-        Log.d(TAG, "bindsmstoview");
+        //Log.d(TAG, "bindsmstoview");
         holder.body.setText(sms.body);
         holder.phoneNr.setText(sms.phoneNr);
     }
