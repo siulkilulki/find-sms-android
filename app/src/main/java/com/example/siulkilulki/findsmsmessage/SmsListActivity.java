@@ -34,33 +34,30 @@ public class SmsListActivity extends AppCompatActivity {
 
         // Initialize the adapter
         // we pass a 'null' Cursor as the
-        // third argument. We will pass the adapter a Cursor only when the
+        // third argument. We will pass the adapter a Data only when the
         // data has finished loading for the first time (for example when the
         // LoaderManager delivers the data to onLoadFinished)
-
-        mSmsAdapter = new SmsAdapter(this, R.layout.queried_message_row,null,0);
+        mSmsAdapter = new SmsAdapter(this);
 
         // Associate the (now empty) adapter with the ListView.
         ListView listView = (ListView) findViewById(R.id.queried_message_list);
-        listView.setAdapter(mSmsAdapter);
+        //listView.setAdapter(mSmsAdapter);
+        //TODO: if mSmsAdapter.getCount == 0 set content view on no_results_view.xml
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor c = (Cursor) mSmsAdapter.getItem(position);
-                Toast.makeText(SmsListActivity.this, c.getString(c.getColumnIndex("body")), Toast.LENGTH_LONG).show();
+                Sms sms =  mSmsAdapter.getItem(position);
+                Toast.makeText(SmsListActivity.this, sms.body, Toast.LENGTH_LONG).show();
             }
         });
 
         //create SmsLoaderCallbacks instantion
-        SmsLoaderCallbacks loaderCallbacks = new SmsLoaderCallbacks(this, mSmsAdapter);
+        SmsLoaderCallbacks loaderCallbacks = new SmsLoaderCallbacks(this, mSmsAdapter, listView);
 
         // Start the loader with the query string inside bundle and
         // an object that will handle all callbacks.
         getLoaderManager().restartLoader(SMS_QUERY_LOADER, bundle, loaderCallbacks);
 
-    }
-    private void initializeList() {
-        ListView list = (ListView) findViewById(R.id.queried_message_list);
     }
     private void showConversation(Sms sms) {
 

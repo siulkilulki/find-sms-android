@@ -6,37 +6,32 @@ package com.example.siulkilulki.findsmsmessage;
 
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.ListView;
 
 /**
  *   Helper class to handle all the callbacks that occur when interacting with loaders.
  */
-public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<SmsBundle> {
     Context mContext;
     SmsAdapter mSmsAdapter;
+    ListView mListView;
     public static final String QUERY_KEY = "query";
     public static final String TAG = "SmsLoaderCallbacks";
 
-    public SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter) {
+    public SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter, ListView mListView) {
         this.mContext = mContext;
         this.mSmsAdapter = mSmsAdapter;
+        this.mListView = mListView;
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int loaderIndex, Bundle args) {
+    public Loader<SmsBundle> onCreateLoader(int loaderIndex, Bundle args) {
         String[] bundleData = args.getStringArray(QUERY_KEY);
         Log.i(TAG, "In onCreateLoader");
-        return new SmsMmsCursorLoader(mContext, bundleData);
+        return new SmsMmsLoader(mContext, bundleData);
         /*return new CursorLoader(
             mContext,   // Context
             uri,   // URI representing the table/resource to be queried
@@ -49,22 +44,25 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
-        Log.i(TAG, (String.valueOf(cursor.getCount())));
-        if (cursor.getCount() == 0) {
-            Log.i(TAG, "zero elements in cursor");
+    public void onLoadFinished(Loader<SmsBundle> arg0, SmsBundle mSmsBundle) {
+        Log.i(TAG, (String.valueOf(mSmsBundle.list.size())));
+        if (mSmsBundle.list.size() == 0) {
+            Log.i(TAG, "zero elements in mSmsBundle");
             return;
         }
-        mSmsAdapter.swapCursor(cursor);
+        mSmsAdapter.setData(mSmsBundle);//swapCursor(mSmsBundle);
+        mListView.setAdapter(mSmsAdapter); // sets adapter when I'm sure the data is loaded
+
 
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+    public void onLoaderReset(Loader<SmsBundle> smmMmsLoader) {
         // For whatever reason, the Loader's data is now unavailable.
         // Remove any references to the old data by replacing it with
         // a null Cursor.
-        mSmsAdapter.swapCursor(null);
+        Log.d(TAG, "Loader reset");
+        mSmsAdapter.setData(null);
     }
 
 

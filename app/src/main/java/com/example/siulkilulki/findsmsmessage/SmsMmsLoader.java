@@ -9,7 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Created by siulkilulki on 15.01.16.
@@ -20,30 +23,33 @@ import android.util.Log;
     // TODO: don't perform query when screen rotates, but reuse existing data
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
-    private static final String TAG = "SmsMmsCursorLoader";
+public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
+    private static final String TAG = "SmsMmsLoader";
     private static final String mmsTag = "mmsQuery";
     Context mContext;
     private Cursor mCursorData;
+    private SmsBundle mSmsBundle;
 
     private final int switchesState = 0;
     private final int searchPhrase = 1;
 
     String[] bundleData;
-    public SmsMmsCursorLoader(Context mContext, String[] bundleData) {
+    public SmsMmsLoader(Context mContext, String[] bundleData) {
         super(mContext);
         this.mContext = mContext;
         this.bundleData = bundleData;
+        //this.mSmsBundle = new SmsBundle(); //initialize mSmsBundle
+        if (mSmsBundle == null)
+            Log.d(TAG, "mSmsBundle == null");
         Log.d(TAG, "Constructor fired");
         onContentChanged();
     }
-
     /**
      * Called on a worker thread to perform the actual load and to return
      * the result of the load operation.
      */
     @Override
-    public Cursor loadInBackground() {
+    public SmsBundle loadInBackground() {
         Log.d(TAG, "loadInBackground");
         String query = bundleData[searchPhrase];
         // BEGIN_INCLUDE(uri_with_query)
@@ -67,11 +73,47 @@ public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
         }
         //Uri uri = Uri.withAppendedPath(inboxUri, query); content://sms/"inbox lub sent"
         Cursor smsCursor = smsQuery(smsUri, query);
-        Cursor mmsCursor = mmsQuery(mmsUri, query);
-        return smsCursor;
+        //Cursor mmsCursor = mmsQuery(mmsUri, query);
+        //Cursor contactsCursor = getContacts();
+
+        mSmsBundle = new SmsBundle();
+        if (smsCursor.getCount() != 0) {
+            smsCursor.moveToFirst();
+            int bodyIndex =  smsCursor.getColumnIndex("body");
+            int phoneIndex = smsCursor.getColumnIndex("address");
+            do {
+                //Log.d(TAG,smsCursor.getString(bodyIndex) + " " + smsCursor.getString(phoneIndex));
+                Sms sms = new Sms();
+                sms.body = smsCursor.getString(bodyIndex);
+                sms.phoneNr = smsCursor.getString(phoneIndex);
+                mSmsBundle.list.add(sms);
+            } while (smsCursor.moveToNext());
+            /*for (Sms i:mSmsBundle.list
+                    ) {
+                //Log.d(TAG, i.body);
+            }*/
+            return mSmsBundle;
+        }
+
+        return mSmsBundle;
     }
     private Cursor getContacts() {
-        return null;
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] projection    = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER};
+
+        Cursor people = mContext.getContentResolver().query(uri, projection, null, null, null);
+        int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+        people.moveToFirst();
+        do {
+            String name   = people.getString(indexName);
+            String number = people.getString(indexNumber);
+            Log.d(TAG, name +" "+number);
+            // Do work...
+        } while (people.moveToNext());
+        return people;
     }
     private Cursor mmsQuery(Uri uri, String query) {
 
@@ -108,20 +150,22 @@ public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
      */
 
     @Override
-    public void deliverResult(Cursor data) {
+    public void deliverResult(SmsBundle data) {
         Log.d(TAG, "deliverResult");
         // The Loader has been reset; ignore the result and invalidate the data.
         if (isReset()) {
+            Log.d(TAG, "deliverResult - maybe mistake here");
             releaseResources(data);
             return;
         }
         // Hold a reference to the old data so it doesn't get garbage collected.
         // We must protect it until the new data has been delivered.
-        Cursor oldData = data;
-        mCursorData = data;
+        SmsBundle oldData = data;
+        mSmsBundle = data;
         // If the Loader is in a started state, deliver the results to the
         // client. The superclass method does this for  us.
         if (isStarted()) {
+            Log.d(TAG, "super.deliverResult");
             super.deliverResult(data);
         }
         if (oldData != data && oldData != null) {
@@ -129,9 +173,9 @@ public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
         }
     }
 
-    private void releaseResources(Cursor data) {
+    private void releaseResources(SmsBundle data) {
         Log.d(TAG, "releaseResources");
-        data.close();
+        //data.close();
     }
 
     /**
@@ -140,14 +184,16 @@ public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
     @Override
     protected void onStartLoading() {
         Log.d(TAG, "onStartLoading()");
-        if (mCursorData != null) {
+        if (mSmsBundle != null) {
+            Log.d(TAG, "onStartLoading() deliverResult");
             // Deliver any previously loaded data immediately.
-            deliverResult(mCursorData);
+            deliverResult(mSmsBundle);
         }
         // TODO: Add Obserwer.
         // TODO: Sms intent reciever to automatically update list whent/recieved
         // That's how we start every AsyncTaskLoader.
-        if(takeContentChanged() || mCursorData == null) {
+        if(takeContentChanged() || mSmsBundle == null) {
+            Log.d(TAG, "onStartLoading() ForceLoad");
             forceLoad();
         }
     }
@@ -174,9 +220,9 @@ public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
         onStopLoading();
 
         // At this point we can release the resources associated with 'mData'.
-        if (mCursorData != null) {
-            releaseResources(mCursorData);
-            mCursorData = null;
+        if (mSmsBundle != null) {
+            releaseResources(mSmsBundle);
+            mSmsBundle = null;
         }
     }
 
@@ -188,7 +234,7 @@ public class SmsMmsCursorLoader extends AsyncTaskLoader<Cursor> {
      * @param data data to be canceled
      */
     @Override
-    public void onCanceled(Cursor data) {
+    public void onCanceled(SmsBundle data) {
         Log.d(TAG, "onCanceled()");
         // Attempt to cancel the current asynchronous load.
         super.onCanceled(data);
