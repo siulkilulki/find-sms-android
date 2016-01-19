@@ -1,5 +1,7 @@
 package com.example.siulkilulki.findsmsmessage;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 
 /**
@@ -13,5 +15,6 @@ public class Sms implements Serializable {
     public String date;
     public String date_sent;
     public String body;
+    public Uri photoThumbnailUri;
 
 }

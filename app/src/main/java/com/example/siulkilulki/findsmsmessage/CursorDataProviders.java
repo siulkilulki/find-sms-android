@@ -32,8 +32,11 @@ public class CursorDataProviders {
 
     public Cursor getContacts() {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.CONTACT_ID};
+        String[] projection = new String[] {
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+                ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI};
         Cursor people = mContext.getContentResolver().query(uri, projection, null, null, null);
         people.moveToFirst();
         return people;

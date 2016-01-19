@@ -2,6 +2,7 @@ package com.example.siulkilulki.findsmsmessage;
 
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -20,18 +21,27 @@ public class SmsDataOrganizer {
         }
         return phoneNumber.replaceAll("[^0-9]+","");
     }
-    public HashMap<String, Tuple> hashContacts(Cursor contactsCursor) {
-        HashMap<String,Tuple> hashMap = new HashMap<>();
+    public HashMap<String, Object[]> hashContacts(Cursor contactsCursor) {
+        HashMap<String,Object[]> hashMap = new HashMap<>();
         contactsCursor.moveToFirst();
         int numberIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
         int nameIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
         int contactIdIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-        int photoUriIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);;
+        int photoUriIndex = contactsCursor.getColumnIndex(ContactsContract.
+                CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);;
 
         do {
-
-            hashMap.put(prettifyNumber(contactsCursor.getString(numberIndex)), new Tuple<Long,String>(
-                    contactsCursor.getLong(contactIdIndex), contactsCursor.getString(nameIndex)));
+            /*Log.d("Sms", contactsCursor.getString(nameIndex));
+            String[] col = contactsCursor.getColumnNames();
+            for (String i : col
+                 ) {
+                Log.d("Sms", i);
+            }*/
+            hashMap.put(prettifyNumber(contactsCursor.getString(numberIndex)), new Object[]{
+                            contactsCursor.getLong(contactIdIndex),
+                            contactsCursor.getString(nameIndex),
+                            contactsCursor.getString(photoUriIndex)}
+            );
         } while (contactsCursor.moveToNext());
         contactsCursor.close();
         return hashMap;

@@ -28,8 +28,11 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private Cursor mCursorData;
     private List<Sms> mSmsList;
 
-    private final int switchesState = 0;
-    private final int searchPhrase = 1;
+    private final int SWITCHES_STATE = 0;
+    private final int SEARCH_PHRASE = 1;
+    private final int CONTACT_ID = 0;
+    private final int NAME = 1;
+    private final int PHOTO_THUMBNAIL_URI = 2;
 
     String[] bundleData;
     public SmsMmsLoader(Context mContext, String[] bundleData) {
@@ -49,10 +52,10 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     @Override
     public List<Sms> loadInBackground() {
         Log.d(TAG, "loadInBackground");
-        String query = bundleData[searchPhrase];
+        String query = bundleData[SEARCH_PHRASE];
         Uri smsUri, mmsUri;
         mmsUri = Uri.parse("content://mms/inbox");
-        switch (bundleData[switchesState]) {
+        switch (bundleData[SWITCHES_STATE]) {
             case ("both"):
                 smsUri = Uri.parse("content://sms");
                 break;
@@ -74,21 +77,22 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         if (smsCursor.getCount() != 0) {
             SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
             Cursor contactsCursor = dataProvider.getContacts();
-            HashMap<String, Tuple> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
+            HashMap<String, Object[]> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
             smsCursor.moveToFirst();
             int bodyIndex =  smsCursor.getColumnIndex("body");
             int phoneIndex = smsCursor.getColumnIndex("address");
-            Tuple<Long, String> hashedTuple = new Tuple<>();
+            Object[] hashedContact = new Object[]{};
             do {
                 Sms sms = new Sms();
                 sms.body = smsCursor.getString(bodyIndex);
                 sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
-                hashedTuple = hashedContacts.get(sms.phoneNr);
-                if (hashedTuple != null) {
-                    sms.contactId = hashedTuple.first;
-                    sms.name = hashedTuple.second;
+                hashedContact = hashedContacts.get(sms.phoneNr);
+                if (hashedContact != null) {
+                    sms.contactId = (long) hashedContact[CONTACT_ID];
+                    sms.name = (String) hashedContact[NAME];
+                    String photoUri = (String) hashedContact[PHOTO_THUMBNAIL_URI];
+                    sms.photoThumbnailUri = (photoUri != null) ? Uri.parse(photoUri) : null;
                 }
-
                 mSmsList.add(sms);
             } while (smsCursor.moveToNext());
             smsCursor.close();

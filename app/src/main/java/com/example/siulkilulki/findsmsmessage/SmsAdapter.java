@@ -18,6 +18,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,16 @@ public class SmsAdapter extends BaseAdapter {
             holder.name.setText(sms.name);
             //Log.d(TAG, sms.name);
         }
-        if (sms.contactId != null) {
+        if(sms.photoThumbnailUri != null) {
+            Picasso.with(mContext).load(sms.photoThumbnailUri).into(holder.photo);
+        } else {
+            //holder.photo.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    //R.drawable.ic_face_black_36dp));
+            //TODO: check what is faster
+            Picasso.with(mContext).load(R.drawable.ic_face_black_36dp).into(holder.photo);
+        }
+
+        /*if (sms.contactId != null) {
             Bitmap bitmap = getPhoto(sms.contactId);
             if (bitmap != null) {
                 holder.photo.setImageBitmap(bitmap);
@@ -99,7 +110,7 @@ public class SmsAdapter extends BaseAdapter {
         } else {
             holder.photo.setImageDrawable(ContextCompat.getDrawable(mContext,
                     R.drawable.ic_face_black_36dp));
-        }
+        }*/
 
     }
     static class ViewHolder {
@@ -107,7 +118,7 @@ public class SmsAdapter extends BaseAdapter {
         TextView name;
         ImageView photo;
     }
-    public Bitmap getPhoto(long contactId) {
+    /*public Bitmap getPhoto(long contactId) {
 
 
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
@@ -133,5 +144,5 @@ public class SmsAdapter extends BaseAdapter {
         }
         return null;
     }
-
+*/
 }
