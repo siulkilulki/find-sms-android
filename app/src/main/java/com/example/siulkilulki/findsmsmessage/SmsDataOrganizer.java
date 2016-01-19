@@ -1,6 +1,7 @@
 package com.example.siulkilulki.findsmsmessage;
 
 import android.database.Cursor;
+import android.provider.ContactsContract;
 
 import java.util.HashMap;
 
@@ -21,8 +22,16 @@ public class SmsDataOrganizer {
     }
     public HashMap<String, String[]> hashContacts(Cursor contactsCursor) {
         HashMap<String,String[]> hashMap = new HashMap<>();
-        /*contactsCursor
-        hashMap.put()*/
+        contactsCursor.moveToFirst();
+        int numberIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        int nameIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        int contactIdIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+
+        do {
+
+            hashMap.put(prettifyNumber(contactsCursor.getString(numberIndex)), new String[]
+                    {contactsCursor.getString(contactIdIndex), contactsCursor.getString(nameIndex)});
+        } while (contactsCursor.moveToNext());
         return hashMap;
     }
 }

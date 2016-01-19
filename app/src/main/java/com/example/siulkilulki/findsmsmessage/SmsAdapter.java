@@ -28,7 +28,6 @@ import java.util.List;
 public class SmsAdapter extends BaseAdapter {
     private Context mContext;
     private List<Sms> mSmsList;
-    private CursorDataProviders dataProvider;
     private static final String TAG = "SmsAdapter";
 
     //R.layout.queried_message_row
@@ -36,7 +35,6 @@ public class SmsAdapter extends BaseAdapter {
     public SmsAdapter(Context mContext) {
         this.mContext = mContext;
         this.mSmsList = new ArrayList<>();
-        this.dataProvider = new CursorDataProviders(mContext);
         Log.d(TAG, "SmsAdapter contructor fired");
     }
 
@@ -80,21 +78,6 @@ public class SmsAdapter extends BaseAdapter {
     private void bindSmsToView(ViewHolder holder, Sms sms){
         //Log.d(TAG, "bindsmstoview");
         holder.body.setText(sms.body);
-
-        Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                Uri.encode(sms.phoneNr));
-        Cursor contactCursor = dataProvider.getContact(contactUri);
-        //Log.d(TAG, sms.phoneNr);
-        if (contactCursor != null) {
-            if (contactCursor.moveToFirst()) {
-                sms.name = contactCursor.getString(contactCursor.getColumnIndexOrThrow(
-                        ContactsContract.PhoneLookup.DISPLAY_NAME));
-                sms.contactId = contactCursor.getInt(contactCursor.getColumnIndexOrThrow(
-                        ContactsContract.PhoneLookup._ID));
-                //Log.d(TAG, sms.name + " " + sms.contactId);
-            }
-        }
-        contactCursor.close();
         if (sms.name == null) {
             holder.name.setText(sms.phoneNr);
         } else {

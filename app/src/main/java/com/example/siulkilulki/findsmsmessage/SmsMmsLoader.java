@@ -13,6 +13,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,6 +30,9 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
 
     private final int switchesState = 0;
     private final int searchPhrase = 1;
+
+    private final int contactId = 0;
+    private final int contactName = 1;
 
     String[] bundleData;
     public SmsMmsLoader(Context mContext, String[] bundleData) {
@@ -65,35 +69,29 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
                 smsUri = Uri.parse("content://sms");// never goes here
         }
         CursorDataProviders dataProvider = new CursorDataProviders(mContext);
+
         Cursor smsCursor = dataProvider.smsQuery(smsUri, query);
         //Cursor mmsCursor = mmsQuery(mmsUri, query);
-        Cursor contactsCursor = dataProvider.getContacts();
 
         mSmsList = new ArrayList<>();
         if (smsCursor.getCount() != 0) {
+            SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
+            Cursor contactsCursor = dataProvider.getContacts();
+            HashMap<String, String[]> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
             smsCursor.moveToFirst();
             int bodyIndex =  smsCursor.getColumnIndex("body");
             int phoneIndex = smsCursor.getColumnIndex("address");
+            String[] hashedTuple = new String[2];
             do {
                 Sms sms = new Sms();
                 sms.body = smsCursor.getString(bodyIndex);
-                sms.phoneNr = smsCursor.getString(phoneIndex);
-               /* Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                        Uri.encode(sms.phoneNr));
-                //Log.d(TAG, contactUri.toString());
-                Cursor contactCursor = dataProvider.getContact(contactUri);
-                //Log.d(TAG, sms.phoneNr);
-                if (contactCursor != null) {
-                    if (contactCursor.moveToFirst()) {
-                        sms.name = contactCursor.getString(contactCursor.getColumnIndexOrThrow(
-                                ContactsContract.PhoneLookup.DISPLAY_NAME));
-                        sms.contactId = contactCursor.getInt(contactCursor.getColumnIndexOrThrow(
-                                ContactsContract.PhoneLookup._ID));
-                        //Log.d(TAG, sms.name + " " + sms.contactId);
-                    }
-
+                sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
+                hashedTuple = hashedContacts.get(sms.phoneNr);
+                if (hashedTuple != null) {
+                    sms.contactId = hashedTuple[contactId];
+                    sms.name = hashedTuple[contactName];
                 }
-                contactCursor.close();*/
+
                 mSmsList.add(sms);
             } while (smsCursor.moveToNext());
             smsCursor.close();

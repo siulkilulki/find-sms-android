@@ -33,20 +33,9 @@ public class CursorDataProviders {
     public Cursor getContacts() {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone._ID};
+                ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.CONTACT_ID};
         Cursor people = mContext.getContentResolver().query(uri, projection, null, null, null);
-        int indexName = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-        int indexNumber = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-        int indexId = people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-
         people.moveToFirst();
-        do {
-            String name   = people.getString(indexName);
-            String number = people.getString(indexNumber);
-            //String id = people.getString(indexId);
-            //Log.d(TAG,id+" " +name +" "+number);
-            // Do work...
-        } while (people.moveToNext());
         return people;
     }
     public Cursor getContact(Uri contactUri) {
