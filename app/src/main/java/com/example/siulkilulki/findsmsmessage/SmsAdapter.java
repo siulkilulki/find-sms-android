@@ -9,11 +9,13 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
@@ -66,6 +68,7 @@ public class SmsAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.body = (TextView) convertView.findViewById(R.id.sms_text);
             holder.name = (TextView) convertView.findViewById(R.id.sms_label);
+            holder.photo = (ImageView) convertView.findViewById(R.id.face);
             convertView.setTag(holder);
         } else {
             // Reuse old views
@@ -80,17 +83,36 @@ public class SmsAdapter extends BaseAdapter {
         holder.body.setText(sms.body);
         if (sms.name == null) {
             holder.name.setText(sms.phoneNr);
+            //Log.d(TAG, sms.phoneNr);
         } else {
             holder.name.setText(sms.name);
+            //Log.d(TAG, sms.name);
         }
+        if (sms.contactId != null) {
+            Bitmap bitmap = getPhoto(sms.contactId);
+            if (bitmap != null) {
+                holder.photo.setImageBitmap(bitmap);
+            } else {
+                holder.photo.setImageDrawable(ContextCompat.getDrawable(mContext,
+                        R.drawable.ic_face_black_36dp));
+            }
+        } else {
+            holder.photo.setImageDrawable(ContextCompat.getDrawable(mContext,
+                    R.drawable.ic_face_black_36dp));
+        }
+
     }
     static class ViewHolder {
         TextView body;
         TextView name;
+        ImageView photo;
     }
-    public Bitmap openPhoto(long contactId) {
+    public Bitmap getPhoto(long contactId) {
+
+
         Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
         Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+
         Cursor cursor = mContext.getContentResolver().query(photoUri,
                 new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
         if (cursor == null) {

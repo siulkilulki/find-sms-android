@@ -31,9 +31,6 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private final int switchesState = 0;
     private final int searchPhrase = 1;
 
-    private final int contactId = 0;
-    private final int contactName = 1;
-
     String[] bundleData;
     public SmsMmsLoader(Context mContext, String[] bundleData) {
         super(mContext);
@@ -77,19 +74,19 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         if (smsCursor.getCount() != 0) {
             SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
             Cursor contactsCursor = dataProvider.getContacts();
-            HashMap<String, String[]> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
+            HashMap<String, Tuple> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
             smsCursor.moveToFirst();
             int bodyIndex =  smsCursor.getColumnIndex("body");
             int phoneIndex = smsCursor.getColumnIndex("address");
-            String[] hashedTuple = new String[2];
+            Tuple<Long, String> hashedTuple = new Tuple<>();
             do {
                 Sms sms = new Sms();
                 sms.body = smsCursor.getString(bodyIndex);
                 sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
                 hashedTuple = hashedContacts.get(sms.phoneNr);
                 if (hashedTuple != null) {
-                    sms.contactId = hashedTuple[contactId];
-                    sms.name = hashedTuple[contactName];
+                    sms.contactId = hashedTuple.first;
+                    sms.name = hashedTuple.second;
                 }
 
                 mSmsList.add(sms);

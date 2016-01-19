@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Sms implements Serializable {
     public int id;
-    public String contactId;
+    public Long contactId;
     public String name;
     public String phoneNr;
     public String date;

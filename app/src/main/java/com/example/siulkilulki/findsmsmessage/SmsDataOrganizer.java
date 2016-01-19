@@ -20,18 +20,20 @@ public class SmsDataOrganizer {
         }
         return phoneNumber.replaceAll("[^0-9]+","");
     }
-    public HashMap<String, String[]> hashContacts(Cursor contactsCursor) {
-        HashMap<String,String[]> hashMap = new HashMap<>();
+    public HashMap<String, Tuple> hashContacts(Cursor contactsCursor) {
+        HashMap<String,Tuple> hashMap = new HashMap<>();
         contactsCursor.moveToFirst();
         int numberIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
         int nameIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
         int contactIdIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+        int photoUriIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);;
 
         do {
 
-            hashMap.put(prettifyNumber(contactsCursor.getString(numberIndex)), new String[]
-                    {contactsCursor.getString(contactIdIndex), contactsCursor.getString(nameIndex)});
+            hashMap.put(prettifyNumber(contactsCursor.getString(numberIndex)), new Tuple<Long,String>(
+                    contactsCursor.getLong(contactIdIndex), contactsCursor.getString(nameIndex)));
         } while (contactsCursor.moveToNext());
+        contactsCursor.close();
         return hashMap;
     }
 }
