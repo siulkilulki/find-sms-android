@@ -13,18 +13,19 @@ import android.provider.ContactsContract;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by siulkilulki on 15.01.16.
  */
 
 
-public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
+public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private static final String TAG = "SmsMmsLoader";
     private static final String mmsTag = "mmsQuery";
     Context mContext;
     private Cursor mCursorData;
-    private SmsBundle mSmsBundle;
+    private List<Sms> mSmsList;
 
     private final int switchesState = 0;
     private final int searchPhrase = 1;
@@ -34,8 +35,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
         super(mContext);
         this.mContext = mContext;
         this.bundleData = bundleData;
-        //this.mSmsBundle = new SmsBundle(); //initialize mSmsBundle
-        if (mSmsBundle == null)
+        if (mSmsList == null)
             Log.d(TAG, "mSmsBundle == null");
         Log.d(TAG, "Constructor fired");
         onContentChanged();
@@ -46,14 +46,10 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
      * the result of the load operation.
      */
     @Override
-    public SmsBundle loadInBackground() {
+    public List<Sms> loadInBackground() {
         Log.d(TAG, "loadInBackground");
         String query = bundleData[searchPhrase];
-        // BEGIN_INCLUDE(uri_with_query)
         Uri smsUri, mmsUri;
-/*        Uri.Builder builder = Uri.parse("content://mms").buildUpon();
-        builder.appendPath(String.valueOf(2)).appendPath("addr");
-        Log.i(mmsTag,builder.build().toString());*/
         mmsUri = Uri.parse("content://mms/inbox");
         switch (bundleData[switchesState]) {
             case ("both"):
@@ -68,32 +64,43 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
             default:
                 smsUri = Uri.parse("content://sms");// never goes here
         }
-        //Uri uri = Uri.withAppendedPath(inboxUri, query); content://sms/"inbox lub sent"
         CursorDataProviders dataProvider = new CursorDataProviders(mContext);
         Cursor smsCursor = dataProvider.smsQuery(smsUri, query);
         //Cursor mmsCursor = mmsQuery(mmsUri, query);
         Cursor contactsCursor = dataProvider.getContacts();
 
-        mSmsBundle = new SmsBundle();
+        mSmsList = new ArrayList<>();
         if (smsCursor.getCount() != 0) {
             smsCursor.moveToFirst();
             int bodyIndex =  smsCursor.getColumnIndex("body");
             int phoneIndex = smsCursor.getColumnIndex("address");
             do {
-                //Log.d(TAG,smsCursor.getString(bodyIndex) + " " + smsCursor.getString(phoneIndex));
                 Sms sms = new Sms();
                 sms.body = smsCursor.getString(bodyIndex);
                 sms.phoneNr = smsCursor.getString(phoneIndex);
-                mSmsBundle.list.add(sms);
+               /* Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                        Uri.encode(sms.phoneNr));
+                //Log.d(TAG, contactUri.toString());
+                Cursor contactCursor = dataProvider.getContact(contactUri);
+                //Log.d(TAG, sms.phoneNr);
+                if (contactCursor != null) {
+                    if (contactCursor.moveToFirst()) {
+                        sms.name = contactCursor.getString(contactCursor.getColumnIndexOrThrow(
+                                ContactsContract.PhoneLookup.DISPLAY_NAME));
+                        sms.contactId = contactCursor.getInt(contactCursor.getColumnIndexOrThrow(
+                                ContactsContract.PhoneLookup._ID));
+                        //Log.d(TAG, sms.name + " " + sms.contactId);
+                    }
+
+                }
+                contactCursor.close();*/
+                mSmsList.add(sms);
             } while (smsCursor.moveToNext());
-            /*for (Sms i:mSmsBundle.list
-                    ) {
-                //Log.d(TAG, i.body);
-            }*/
-            return mSmsBundle;
+            smsCursor.close();
+            return mSmsList;
         }
 
-        return mSmsBundle;
+        return mSmsList;
     }
 
     /**
@@ -103,7 +110,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
      */
 
     @Override
-    public void deliverResult(SmsBundle data) {
+    public void deliverResult(List<Sms> data) {
         Log.d(TAG, "deliverResult");
         // The Loader has been reset; ignore the result and invalidate the data.
         if (isReset()) {
@@ -113,8 +120,8 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
         }
         // Hold a reference to the old data so it doesn't get garbage collected.
         // We must protect it until the new data has been delivered.
-        SmsBundle oldData = data;
-        mSmsBundle = data;
+        List<Sms> oldData = data;
+        mSmsList = data;
         // If the Loader is in a started state, deliver the results to the
         // client. The superclass method does this for  us.
         if (isStarted()) {
@@ -126,7 +133,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
         }
     }
 
-    private void releaseResources(SmsBundle data) {
+    private void releaseResources(List<Sms> data) {
         Log.d(TAG, "releaseResources");
         //data.close();
     }
@@ -137,15 +144,15 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
     @Override
     protected void onStartLoading() {
         Log.d(TAG, "onStartLoading()");
-        if (mSmsBundle != null) {
+        if (mSmsList != null) {
             Log.d(TAG, "onStartLoading() deliverResult");
             // Deliver any previously loaded data immediately.
-            deliverResult(mSmsBundle);
+            deliverResult(mSmsList);
         }
         // TODO: Add Obserwer.
         // TODO: Sms intent reciever to automatically update list whent/recieved
         // That's how we start every AsyncTaskLoader.
-        if(takeContentChanged() || mSmsBundle == null) {
+        if(takeContentChanged() || mSmsList == null) {
             Log.d(TAG, "onStartLoading() ForceLoad");
             forceLoad();
         }
@@ -173,9 +180,9 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
         onStopLoading();
 
         // At this point we can release the resources associated with 'mData'.
-        if (mSmsBundle != null) {
-            releaseResources(mSmsBundle);
-            mSmsBundle = null;
+        if (mSmsList != null) {
+            releaseResources(mSmsList);
+            mSmsList = null;
         }
     }
 
@@ -187,7 +194,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<SmsBundle> {
      * @param data data to be canceled
      */
     @Override
-    public void onCanceled(SmsBundle data) {
+    public void onCanceled(List<Sms> data) {
         Log.d(TAG, "onCanceled()");
         // Attempt to cancel the current asynchronous load.
         super.onCanceled(data);

@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 
+import java.util.List;
+
 /**
  *   Helper class to handle all the callbacks that occur when interacting with loaders.
  */
-public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<SmsBundle> {
+public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
     Context mContext;
     SmsAdapter mSmsAdapter;
     ListView mListView;
@@ -29,7 +31,7 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<SmsBund
     }
 
     @Override
-    public Loader<SmsBundle> onCreateLoader(int loaderIndex, Bundle args) {
+    public Loader<List<Sms>> onCreateLoader(int loaderIndex, Bundle args) {
         String[] bundleData = args.getStringArray(QUERY_KEY);
         Log.i(TAG, "In onCreateLoader");
         return new SmsMmsLoader(mContext, bundleData);
@@ -45,23 +47,23 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<SmsBund
     }
 
     @Override
-    public void onLoadFinished(Loader<SmsBundle> arg0, SmsBundle mSmsBundle) {
-        Log.i(TAG, (String.valueOf(mSmsBundle.list.size())));
-        if (mSmsBundle.list.size() == 0) {
+    public void onLoadFinished(Loader<List<Sms>> arg0, List<Sms> mSmsList) {
+        Log.i(TAG, (String.valueOf(mSmsList.size())));
+        if (mSmsList.size() == 0) {
             Log.i(TAG, "zero elements in mSmsBundle");
             // if no results (SmsBundle list empty) change layout to no_results_view.xml
             Activity a = (Activity) mContext;
             a.setContentView(R.layout.no_results_view);
             return;
         }
-        mSmsAdapter.setData(mSmsBundle);//swapCursor(mSmsBundle);
+        mSmsAdapter.setData(mSmsList);//swapCursor(mSmsBundle);
         mListView.setAdapter(mSmsAdapter); // sets adapter when I'm sure the data is loaded
 
 
     }
 
     @Override
-    public void onLoaderReset(Loader<SmsBundle> smmMmsLoader) {
+    public void onLoaderReset(Loader<List<Sms>> smmMmsLoader) {
         // For whatever reason, the Loader's data is now unavailable.
         // Remove any references to the old data by replacing it with
         // a null Cursor.
