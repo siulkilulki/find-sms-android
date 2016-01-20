@@ -1,17 +1,10 @@
 package com.example.siulkilulki.findsmsmessage;
 
 import android.content.AsyncTaskLoader;
-import android.content.ContentProviderClient;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,26 +14,27 @@ import java.util.List;
  */
 
 
+/**
+ * Custom Loader for loading sms data
+ */
 public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private static final String TAG = "SmsMmsLoader";
     private static final String mmsTag = "mmsQuery";
     Context mContext;
-    private Cursor mCursorData;
     private List<Sms> mSmsList;
 
     private final int SWITCHES_STATE = 0;
     private final int SEARCH_PHRASE = 1;
+    private final int REGEX = 2;
     private final int CONTACT_ID = 0;
     private final int NAME = 1;
     private final int PHOTO_THUMBNAIL_URI = 2;
+    private String[] bundleData;
 
-    String[] bundleData;
     public SmsMmsLoader(Context mContext, String[] bundleData) {
         super(mContext);
         this.mContext = mContext;
         this.bundleData = bundleData;
-        if (mSmsList == null)
-            Log.d(TAG, "mSmsBundle == null");
         Log.d(TAG, "Constructor fired");
         onContentChanged();
     }
@@ -54,7 +48,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         Log.d(TAG, "loadInBackground");
         String query = bundleData[SEARCH_PHRASE];
         Uri smsUri, mmsUri;
-        mmsUri = Uri.parse("content://mms/inbox");
+        //mmsUri = Uri.parse("content://mms/inbox"); TODO: mms are still on todo list
         switch (bundleData[SWITCHES_STATE]) {
             case ("both"):
                 smsUri = Uri.parse("content://sms");
@@ -69,10 +63,10 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
                 smsUri = Uri.parse("content://sms");// never goes here
         }
         CursorDataProviders dataProvider = new CursorDataProviders(mContext);
+        Cursor smsCursor = dataProvider.smsQuery(smsUri, query, bundleData[REGEX]);
+        //Cursor mmsCursor = mmsQuery(mmsUri, query); TODO: mms are still on todo list
 
-        Cursor smsCursor = dataProvider.smsQuery(smsUri, query);
-        //Cursor mmsCursor = mmsQuery(mmsUri, query);
-
+        //TODO: move below code to convenient method
         mSmsList = new ArrayList<>();
         if (smsCursor.getCount() != 0) {
             SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
@@ -107,7 +101,6 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
      *
      * @param data the result of the load
      */
-
     @Override
     public void deliverResult(List<Sms> data) {
         Log.d(TAG, "deliverResult");
@@ -132,6 +125,8 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         }
     }
 
+    //TODO: maybe will use it, so its still here, if not delete this method since it's doesn't
+    // TODO: make sense to release List data
     private void releaseResources(List<Sms> data) {
         Log.d(TAG, "releaseResources");
         //data.close();

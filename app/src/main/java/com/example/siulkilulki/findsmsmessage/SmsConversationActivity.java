@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 public class SmsConversationActivity extends AppCompatActivity {
 
+    //TODO: whole class to do
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

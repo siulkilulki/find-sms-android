@@ -2,7 +2,6 @@ package com.example.siulkilulki.findsmsmessage;
 
 import android.database.Cursor;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import java.util.HashMap;
 
@@ -10,17 +9,19 @@ import java.util.HashMap;
  * Created by siulkilulki on 17.01.16.
  */
 public class SmsDataOrganizer {
-   /* public HashMap<String, > contactsToHashMap (){
 
-    }
-    public boolean areNumbersEqual(String contactNumber, String smsNumber) {
-    }*/
     public String prettifyNumber(String phoneNumber) {
         if (phoneNumber.charAt(0) == '+') {
             phoneNumber = phoneNumber.substring(phoneNumber.length()-9);
         }
         return phoneNumber.replaceAll("[^0-9]+","");
     }
+
+    /**
+     * Creates hashmap to quickly populate messages with contact data.
+     * @param contactsCursor
+     * @return Returns HashMap with phones as key, and contact data as value.
+     */
     public HashMap<String, Object[]> hashContacts(Cursor contactsCursor) {
         HashMap<String,Object[]> hashMap = new HashMap<>();
         contactsCursor.moveToFirst();
@@ -31,12 +32,6 @@ public class SmsDataOrganizer {
                 CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);;
 
         do {
-            /*Log.d("Sms", contactsCursor.getString(nameIndex));
-            String[] col = contactsCursor.getColumnNames();
-            for (String i : col
-                 ) {
-                Log.d("Sms", i);
-            }*/
             hashMap.put(prettifyNumber(contactsCursor.getString(numberIndex)), new Object[]{
                             contactsCursor.getLong(contactIdIndex),
                             contactsCursor.getString(nameIndex),

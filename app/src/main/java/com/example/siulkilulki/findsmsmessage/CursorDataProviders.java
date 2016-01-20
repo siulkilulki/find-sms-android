@@ -1,16 +1,10 @@
 package com.example.siulkilulki.findsmsmessage;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 /**
  * Created by siulkilulki on 17.01.16.
@@ -18,18 +12,41 @@ import java.io.InputStream;
 public class CursorDataProviders {
     private Context mContext;
     private static final String TAG = "SmsCursorDataProviders";
+
     public CursorDataProviders(Context mContext) {
         this.mContext = mContext;
     }
 
-    public Cursor smsQuery(Uri uri, String query) {
-        String selection = "body LIKE ?";
-        String[] selectionArgs = {"%"+query+"%"};
+    /**
+     * Queries sms data that matches the given query.
+     * @param uri
+     * @param query
+     * @param regex
+     * @return Cursor with sms data.
+     */
+    public Cursor smsQuery(Uri uri, String query, String regex) {
+        String selection = null;
+        String[] selectionArgs = null;
+        switch (regex) {
+            case "true":
+                selection = "body GLOB ?";
+                selectionArgs = new String[]{query};
+                break;
+            case "false":
+                selection = "body LIKE ?";
+                selectionArgs = new String[]{"%"+query+"%"};
+                break;
+        }
         String[] projection = {"_id","address","date","date_sent", "body"};
-        Cursor smsCursor = mContext.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        Cursor smsCursor = mContext.getContentResolver().query(uri, projection, selection,
+                selectionArgs, null);
         return smsCursor;
     }
 
+    /**
+     * Gets contacts data
+     * @return Cursor with contacts data.
+     */
     public Cursor getContacts() {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = new String[] {
@@ -41,14 +58,16 @@ public class CursorDataProviders {
         people.moveToFirst();
         return people;
     }
+
+    // TODO: probably wouldn't use that method, delete soon
     public Cursor getContact(Uri contactUri) {
         String[] projection = new String[] {ContactsContract.PhoneLookup.DISPLAY_NAME,
         ContactsContract.PhoneLookup._ID};
         return mContext.getContentResolver().query(contactUri, projection, null, null, null);
     }
 
+    // TODO: mmsQuery
     public Cursor mmsQuery(Uri uri, String query) {
-
         Cursor mmsCursor = mContext.getContentResolver().query(uri, null, null, null, null);
         //Log.i(mmsTag, String.valueOf(mmsCursor.getCount()));
         String[] columnNames = mmsCursor.getColumnNames();

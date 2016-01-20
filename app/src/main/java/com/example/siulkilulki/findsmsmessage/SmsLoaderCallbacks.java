@@ -35,38 +35,30 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sm
         String[] bundleData = args.getStringArray(QUERY_KEY);
         Log.i(TAG, "In onCreateLoader");
         return new SmsMmsLoader(mContext, bundleData);
-        /*return new CursorLoader(
-            mContext,   // Context
-            uri,   // URI representing the table/resource to be queried
-            projection,       // projection - the list of columns to return.  Null means "all"
-            selection,       // selection - Which rows to return (condition rows must match)
-            selectionArgs,       // selection args - can be provided separately and subbed into selection.
-            null);      // string specifying sort order
-        // END_INCLUDE(cursor_loader)*/
-
     }
 
     @Override
     public void onLoadFinished(Loader<List<Sms>> arg0, List<Sms> mSmsList) {
         Log.i(TAG, (String.valueOf(mSmsList.size())));
         if (mSmsList.size() == 0) {
-            Log.i(TAG, "zero elements in mSmsBundle");
-            // if no results (SmsBundle list empty) change layout to no_results_view.xml
+
+            // if no results (mSmsList list empty) change layout to no_results_view.xml
             Activity a = (Activity) mContext;
             a.setContentView(R.layout.no_results_view);
             return;
         }
-        mSmsAdapter.setData(mSmsList);//swapCursor(mSmsBundle);
-        mListView.setAdapter(mSmsAdapter); // sets adapter when I'm sure the data is loaded
+        mSmsAdapter.setData(mSmsList); // finished loading so i can set the adapters data
+        mListView.setAdapter(mSmsAdapter); // bind adapter with view when I'm sure the data is loaded
 
 
     }
 
     @Override
     public void onLoaderReset(Loader<List<Sms>> smmMmsLoader) {
+
         // For whatever reason, the Loader's data is now unavailable.
         // Remove any references to the old data by replacing it with
-        // a null Cursor.
+        // a null.
         Log.d(TAG, "Loader reset");
         mSmsAdapter.setData(null);
     }

@@ -32,28 +32,40 @@
         android:layout_alignEnd="@+id/search_label" />
 
     <Switch
+        android:id="@+id/inbox_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Inbox"
         android:textOn="Yes"
         android:textOff="No"
-        android:id="@+id/inbox_switch"
         android:layout_marginTop="44dp"
         android:layout_below="@+id/search_input"
         android:layout_alignStart="@+id/search_input"
         android:layout_alignEnd="@+id/search_input" />
 
     <Switch
+        android:id="@+id/sent_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sent"
         android:textOn="Yes"
         android:textOff="No"
-        android:id="@+id/sent_switch"
         android:layout_marginTop="15dp"
         android:layout_below="@+id/inbox_switch"
         android:layout_alignStart="@+id/inbox_switch"
         android:layout_alignEnd="@+id/inbox_switch" />
+
+    <Switch
+        android:id="@+id/regex_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Regex search"
+        android:textOn="Yes"
+        android:textOff="No"
+        android:layout_marginTop="15dp"
+        android:layout_below="@+id/sent_switch"
+        android:layout_alignStart="@+id/sent_switch"
+        android:layout_alignEnd="@+id/sent_switch"/>
 
 </RelativeLayout>
 

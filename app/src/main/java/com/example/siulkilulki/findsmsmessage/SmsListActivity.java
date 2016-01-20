@@ -24,25 +24,19 @@ public class SmsListActivity extends AppCompatActivity {
         setContentView(R.layout.queried_message_list);
         Intent intent = getIntent();
 
-
-        // Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
-
         // Bundle containg query string
         String[] bundleData = intent.getStringArrayExtra(MainActivity.PHRASE_KEY);
         Bundle bundle = new Bundle();
         bundle.putStringArray(QUERY_KEY, bundleData);
 
         // Initialize the adapter
-        // we pass a 'null' Cursor as the
-        // third argument. We will pass the adapter a Data only when the
+        // We will pass the adapter a Data only when the
         // data has finished loading for the first time (for example when the
         // LoaderManager delivers the data to onLoadFinished)
         mSmsAdapter = new SmsAdapter(this);
 
         // Associate the (now empty) adapter with the ListView.
         ListView listView = (ListView) findViewById(R.id.queried_message_list);
-        //listView.setAdapter(mSmsAdapter);
-        //TODO: if mSmsAdapter.getCount == 0 set content view on no_results_view.xml
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -51,7 +45,7 @@ public class SmsListActivity extends AppCompatActivity {
             }
         });
 
-        //create SmsLoaderCallbacks instantion
+        // Create SmsLoaderCallbacks instantion
         SmsLoaderCallbacks loaderCallbacks = new SmsLoaderCallbacks(this, mSmsAdapter, listView);
 
         // Start the loader with the query string inside bundle and
@@ -59,6 +53,8 @@ public class SmsListActivity extends AppCompatActivity {
         getLoaderManager().restartLoader(SMS_QUERY_LOADER, bundle, loaderCallbacks);
 
     }
+
+    // TODO: method to use when clicked on sms, to be done
     private void showConversation(Sms sms) {
 
     }
