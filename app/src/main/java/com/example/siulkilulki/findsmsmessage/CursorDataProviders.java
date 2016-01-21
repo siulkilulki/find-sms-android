@@ -37,7 +37,7 @@ public class CursorDataProviders {
                 selectionArgs = new String[]{"%"+query+"%"};
                 break;
         }
-        String[] projection = {"_id","address","date","date_sent", "body"};
+        String[] projection = {"_id","address","date","date_sent", "body", "type"};
         Cursor smsCursor = mContext.getContentResolver().query(uri, projection, selection,
                 selectionArgs, null);
         return smsCursor;

@@ -4,8 +4,13 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.Telephony;
 import android.util.Log;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,9 +28,6 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     Context mContext;
     private List<Sms> mSmsList;
 
-    private final int SWITCHES_STATE = 0;
-    private final int SEARCH_PHRASE = 1;
-    private final int REGEX = 2;
     private final int CONTACT_ID = 0;
     private final int NAME = 1;
     private final int PHOTO_THUMBNAIL_URI = 2;
@@ -46,10 +48,10 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     @Override
     public List<Sms> loadInBackground() {
         Log.d(TAG, "loadInBackground");
-        String query = bundleData[SEARCH_PHRASE];
+        String query = bundleData[Constants.SEARCH_PHRASE];
         Uri smsUri, mmsUri;
         //mmsUri = Uri.parse("content://mms/inbox"); TODO: mms are still on todo list
-        switch (bundleData[SWITCHES_STATE]) {
+        switch (bundleData[Constants.SWITCHES_STATE]) {
             case ("both"):
                 smsUri = Uri.parse("content://sms");
                 break;
@@ -63,37 +65,58 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
                 smsUri = Uri.parse("content://sms");// never goes here
         }
         CursorDataProviders dataProvider = new CursorDataProviders(mContext);
-        Cursor smsCursor = dataProvider.smsQuery(smsUri, query, bundleData[REGEX]);
+        Cursor smsCursor = dataProvider.smsQuery(smsUri, query, bundleData[Constants.REGEX]);
         //Cursor mmsCursor = mmsQuery(mmsUri, query); TODO: mms are still on todo list
 
         //TODO: move below code to convenient method
-        mSmsList = new ArrayList<>();
-        if (smsCursor.getCount() != 0) {
-            SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
-            Cursor contactsCursor = dataProvider.getContacts();
-            HashMap<String, Object[]> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
-            smsCursor.moveToFirst();
-            int bodyIndex =  smsCursor.getColumnIndex("body");
-            int phoneIndex = smsCursor.getColumnIndex("address");
-            Object[] hashedContact = new Object[]{};
-            do {
-                Sms sms = new Sms();
-                sms.body = smsCursor.getString(bodyIndex);
-                sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
-                hashedContact = hashedContacts.get(sms.phoneNr);
-                if (hashedContact != null) {
-                    sms.contactId = (long) hashedContact[CONTACT_ID];
-                    sms.name = (String) hashedContact[NAME];
-                    String photoUri = (String) hashedContact[PHOTO_THUMBNAIL_URI];
-                    sms.photoThumbnailUri = (photoUri != null) ? Uri.parse(photoUri) : null;
-                }
-                mSmsList.add(sms);
-            } while (smsCursor.moveToNext());
-            smsCursor.close();
-            return mSmsList;
-        }
 
+        if (smsCursor.getCount() != 0) {
+            return getSmsList(dataProvider, smsCursor);
+        }
+        return new ArrayList<>();
+    }
+
+    private List<Sms> getSmsList(CursorDataProviders dataProvider, Cursor smsCursor) {
+        mSmsList = new ArrayList<>();
+        SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
+        Cursor contactsCursor = dataProvider.getContacts();
+        HashMap<String, Object[]> hashedContacts = dataOrganizer.hashContacts(contactsCursor);
+        smsCursor.moveToFirst();
+        int bodyIndex =  smsCursor.getColumnIndex(Telephony.Sms.BODY);
+        int phoneIndex = smsCursor.getColumnIndex(Telephony.Sms.ADDRESS);
+        int typeIndex = smsCursor.getColumnIndex(Telephony.Sms.TYPE);
+        int dateIndex = smsCursor.getColumnIndex(Telephony.Sms.DATE);
+        SimpleDateFormat months = new SimpleDateFormat("d MMM"); // creating here becouse
+        SimpleDateFormat years = new SimpleDateFormat("d MMM y");// creating many intances of
+        Date currentDate = new Date();                           // SimpleDateFormat inside loop
+        do {                                                     // slows down list loading
+            Sms sms = new Sms();
+            sms.body = smsCursor.getString(bodyIndex);
+            sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
+            sms.type = smsCursor.getInt(typeIndex);
+            sms.date = getDate(smsCursor.getLong(dateIndex), months, years, currentDate);
+            Object[] hashedContact = hashedContacts.get(sms.phoneNr);
+            if (hashedContact != null) {
+                sms.contactId = (long) hashedContact[CONTACT_ID];
+                sms.name = (String) hashedContact[NAME];
+                String photoUri = (String) hashedContact[PHOTO_THUMBNAIL_URI];
+                sms.photoThumbnailUri = (photoUri != null) ? Uri.parse(photoUri) : null;
+            }
+            mSmsList.add(sms);
+        } while (smsCursor.moveToNext());
+        smsCursor.close();
         return mSmsList;
+    }
+
+
+    private String getDate(long smsTime, SimpleDateFormat months, SimpleDateFormat years,
+                           Date currentDate) {
+        Date date = new Date(smsTime);
+        if (date.getYear() == currentDate.getYear()) { // its faster than creating calendar instances
+            return months.format(date);
+        } else {
+            return years.format(date);
+        }
     }
 
     /**
@@ -144,7 +167,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
             deliverResult(mSmsList);
         }
         // TODO: Add Obserwer.
-        // TODO: Sms intent reciever to automatically update list whent/recieved
+        // TODO: Sms intent reciever to automatically update list when recieved
         // That's how we start every AsyncTaskLoader.
         if(takeContentChanged() || mSmsList == null) {
             Log.d(TAG, "onStartLoading() ForceLoad");

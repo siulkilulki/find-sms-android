@@ -1,6 +1,7 @@
 package com.example.siulkilulki.findsmsmessage;
 
 import android.content.Context;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ public class SmsAdapter extends BaseAdapter {
         Log.d(TAG, "SmsAdapter contructor fired");
     }
 
+
+
     public void setData(List<Sms> smsList) {
         Log.d(TAG, "Data set");
         this.mSmsList = smsList;
@@ -50,6 +53,13 @@ public class SmsAdapter extends BaseAdapter {
         return position;
     }
 
+    static class ViewHolder {
+        TextView body;
+        TextView name;
+        TextView date;
+        ImageView photo;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -58,6 +68,7 @@ public class SmsAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.body = (TextView) convertView.findViewById(R.id.sms_text);
             holder.name = (TextView) convertView.findViewById(R.id.sms_label);
+            holder.date = (TextView) convertView.findViewById(R.id.date_text);
             holder.photo = (ImageView) convertView.findViewById(R.id.face);
             convertView.setTag(holder);
         } else {
@@ -67,13 +78,12 @@ public class SmsAdapter extends BaseAdapter {
         bindSmsToView(holder, getItem(position));
         return convertView;
     }
+
     private void bindSmsToView(ViewHolder holder, Sms sms){
         holder.body.setText(sms.body);
-        if (sms.name == null) {
-            holder.name.setText(sms.phoneNr);
-        } else {
-            holder.name.setText(sms.name);
-        }
+        holder.date.setText(sms.date);
+        setName(holder, sms);
+
         if(sms.photoThumbnailUri != null) {
             Picasso.with(mContext).load(sms.photoThumbnailUri).into(holder.photo);
         } else {
@@ -96,11 +106,27 @@ public class SmsAdapter extends BaseAdapter {
 
     }
 
-    static class ViewHolder {
-        TextView body;
-        TextView name;
-        ImageView photo;
+    private void setName(ViewHolder holder, Sms sms) {
+        String smsDirection;
+        switch (sms.type) {
+            case Telephony.Sms.MESSAGE_TYPE_INBOX:
+                smsDirection = "From: ";
+                break;
+            case Telephony.Sms.MESSAGE_TYPE_SENT:
+                smsDirection = "To: ";
+                break;
+            default:
+                smsDirection = "";
+                break;
+        }
+        if (sms.name == null) {
+            holder.name.setText(smsDirection + sms.phoneNr);
+        } else {
+            holder.name.setText(smsDirection + sms.name);
+        }
     }
+
+
 
     // TODO: delete after showing teachers that this is much slower then picasso
     /*public Bitmap getPhoto(long contactId) {

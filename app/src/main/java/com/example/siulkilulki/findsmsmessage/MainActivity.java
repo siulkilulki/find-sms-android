@@ -12,12 +12,9 @@ import android.widget.Switch;
 
 public class MainActivity extends AppCompatActivity {
     public final static String PHRASE_KEY = "query";
-    private final static int switchesState = 0;
-    private final static int searchPhrase = 1;
-    private final static int regexState = 2;
-    private boolean inboxSwitchState = true; //starting values
-    private boolean sentSwitchState = false; //starting values
-    private boolean regexSwitchState = false;
+    private boolean inboxSwitchState = true; // starting value
+    private boolean sentSwitchState = false; // starting value
+    private boolean regexSwitchState = false; // starting value
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +85,16 @@ public class MainActivity extends AppCompatActivity {
 
                 // Determine where to search for sms
                 if (inboxSwitchState && sentSwitchState) {
-                    bundleData[switchesState] = "both";
+                    bundleData[Constants.SWITCHES_STATE] = "both";
                 } else if (inboxSwitchState) {
-                    bundleData[switchesState] ="inbox";
+                    bundleData[Constants.SWITCHES_STATE] ="inbox";
                 } else if (sentSwitchState) {
-                    bundleData[switchesState] ="sent";
+                    bundleData[Constants.SWITCHES_STATE] ="sent";
                 }
-                bundleData[regexState] = regexSwitchState ? "true" : "false";
+                bundleData[Constants.REGEX] = regexSwitchState ? "true" : "false";
 
                 // Get user input(search phrase)
-                bundleData[searchPhrase] = editText.getText().toString();
+                bundleData[Constants.SEARCH_PHRASE] = editText.getText().toString();
                 intent.putExtra(PHRASE_KEY, bundleData);
                 startActivity(intent);
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
