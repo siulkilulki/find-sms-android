@@ -9,11 +9,11 @@ import android.util.Log;
 /**
  * Created by siulkilulki on 17.01.16.
  */
-public class CursorDataProviders {
+class CursorDataProviders {
     private Context mContext;
     private static final String TAG = "SmsCursorDataProviders";
 
-    public CursorDataProviders(Context mContext) {
+    CursorDataProviders(Context mContext) {
         this.mContext = mContext;
     }
 
@@ -24,7 +24,7 @@ public class CursorDataProviders {
      * @param regex
      * @return Cursor with sms data.
      */
-    public Cursor smsQuery(Uri uri, String query, String regex) {
+    Cursor smsQuery(Uri uri, String query, String regex) {
         String selection = null;
         String[] selectionArgs = null;
         switch (regex) {
@@ -47,7 +47,7 @@ public class CursorDataProviders {
      * Gets contacts data
      * @return Cursor with contacts data.
      */
-    public Cursor getContacts() {
+    Cursor getContacts() {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = new String[] {
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -60,14 +60,14 @@ public class CursorDataProviders {
     }
 
     // TODO: probably wouldn't use that method, delete soon
-    public Cursor getContact(Uri contactUri) {
+     Cursor getContact(Uri contactUri) {
         String[] projection = new String[] {ContactsContract.PhoneLookup.DISPLAY_NAME,
         ContactsContract.PhoneLookup._ID};
         return mContext.getContentResolver().query(contactUri, projection, null, null, null);
     }
 
     // TODO: mmsQuery
-    public Cursor mmsQuery(Uri uri, String query) {
+     Cursor mmsQuery(Uri uri, String query) {
         Cursor mmsCursor = mContext.getContentResolver().query(uri, null, null, null, null);
         //Log.i(mmsTag, String.valueOf(mmsCursor.getCount()));
         String[] columnNames = mmsCursor.getColumnNames();

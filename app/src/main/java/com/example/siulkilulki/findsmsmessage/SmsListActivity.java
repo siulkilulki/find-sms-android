@@ -3,6 +3,7 @@ package com.example.siulkilulki.findsmsmessage;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.Telephony;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ public class SmsListActivity extends AppCompatActivity {
 
     // The adapter that binds our data to the ListView
     private SmsAdapter mSmsAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +43,8 @@ public class SmsListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Sms sms =  mSmsAdapter.getItem(position);
-                Toast.makeText(SmsListActivity.this, sms.body, Toast.LENGTH_LONG).show();
+                //Toast.makeText(SmsListActivity.this, sms.body, Toast.LENGTH_LONG).show();
+                showSmsDialog(sms);
             }
         });
 
@@ -54,6 +57,11 @@ public class SmsListActivity extends AppCompatActivity {
 
     }
 
+    private void showSmsDialog(Sms sms) {
+        FragmentManager fm = getSupportFragmentManager();
+        SmsDialogFragment smsDialogFragment = SmsDialogFragment.newInstance(sms);
+        smsDialogFragment.show(fm, "fragment_edit_name");
+    }
     // TODO: method to use when clicked on sms, to be done
     private void showConversation(Sms sms) {
 

@@ -5,13 +5,15 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
 public class MainActivity extends AppCompatActivity {
-    public final static String PHRASE_KEY = "query";
+    final static String PHRASE_KEY = "query";
     private boolean inboxSwitchState = true; // starting value
     private boolean sentSwitchState = false; // starting value
     private boolean regexSwitchState = false; // starting value

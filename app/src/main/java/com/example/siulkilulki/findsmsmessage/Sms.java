@@ -13,7 +13,8 @@ public class Sms implements Serializable {
     public String name;
     public String phoneNr;
     public String date;
-    public String date_sent;
+    public long rawDate;
+    public long rawDateSent; //TODO: search for it and delete or add later to dialog view
     public String body;
     public Uri photoThumbnailUri;
 }

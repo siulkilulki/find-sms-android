@@ -86,6 +86,7 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         int phoneIndex = smsCursor.getColumnIndex(Telephony.Sms.ADDRESS);
         int typeIndex = smsCursor.getColumnIndex(Telephony.Sms.TYPE);
         int dateIndex = smsCursor.getColumnIndex(Telephony.Sms.DATE);
+        int dateSentIndex = smsCursor.getColumnIndex(Telephony.Sms.DATE_SENT);
         SimpleDateFormat months = new SimpleDateFormat("d MMM"); // creating here becouse
         SimpleDateFormat years = new SimpleDateFormat("d MMM y");// creating many intances of
         Date currentDate = new Date();                           // SimpleDateFormat inside loop
@@ -94,7 +95,10 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
             sms.body = smsCursor.getString(bodyIndex);
             sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
             sms.type = smsCursor.getInt(typeIndex);
-            sms.date = getDate(smsCursor.getLong(dateIndex), months, years, currentDate);
+            //sms.rawDateSent = smsCursor.getLong(dateSentIndex); //TODO: add later
+            long rawDate = smsCursor.getLong(dateIndex);
+            sms.rawDate = rawDate;
+            sms.date = getDate(rawDate, months, years, currentDate);
             Object[] hashedContact = hashedContacts.get(sms.phoneNr);
             if (hashedContact != null) {
                 sms.contactId = (long) hashedContact[CONTACT_ID];
