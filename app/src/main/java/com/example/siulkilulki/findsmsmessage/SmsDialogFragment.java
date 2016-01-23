@@ -132,10 +132,15 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
     //TODO: add remembering font settings
     private void changeFont(int code) {
         if (code == LARGER) {
-            textSize += 4;
+            if (textSize < 56) {
+                textSize += 4;
+            }
         } else if (code == SMALLER) {
-            textSize -= 4;
+            if (textSize > 20) {
+                textSize -= 4;
+            }
         }
+        Log.d("FontSize", String.valueOf(textSize));
         applyFont(textSize);
     }
 
