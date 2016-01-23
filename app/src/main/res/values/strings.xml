@@ -5,4 +5,6 @@
     <string name="no_messages_found">No messages found</string>
     <string name="label_main">Find message</string>
     <string name="label_sms_list">Found</string>
+    <string name="pref_file_key">com.example.siulkilulki.findsmsmessage.PREF_FILE</string>
+    <string name="pref_font_size_key">pref_font_size_key</string>
 </resources>

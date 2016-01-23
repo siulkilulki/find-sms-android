@@ -1,6 +1,8 @@
 package com.example.siulkilulki.findsmsmessage;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -96,32 +98,35 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
 
         //sets key listner
         getDialog().setOnKeyListener(this);
-        textSize = body.getTextSize();
+        textSize = getSavedFont();
+        applyFont(textSize);
 
         return v;
     }
 
     @Override
     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-        Log.d("SmsDialog", "OnKey");
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (keyCode == event.KEYCODE_VOLUME_DOWN) {
                 changeFont(SMALLER);
-                Log.d("SmsDialog", "VolumeDown");
                 return true;
             } else if (keyCode == event.KEYCODE_VOLUME_UP) {
                 changeFont(LARGER);
-                Log.d("SmsDialog", "VolumeUp");
                 return  true;
             }
         }
         if (event.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == event.KEYCODE_VOLUME_UP || keyCode == event.KEYCODE_VOLUME_DOWN) {
-                Log.d("SmsDialog", "ActionUp and Up or Down");
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        saveFont(textSize);
+        super.onDismiss(dialog);
     }
 
     //TODO: add remembering font settings
@@ -131,11 +136,28 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
         } else if (code == SMALLER) {
             textSize -= 4;
         }
-        body.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        nameNumber.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        date.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        buttonBack.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        applyFont(textSize);
+    }
 
+    private void applyFont(Float fontSize) {
+        body.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
+        nameNumber.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
+        date.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
+        buttonBack.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
+    }
+
+    private void saveFont(Float fontSize) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putFloat(getString(R.string.pref_font_size_key), fontSize);
+        editor.commit();
+    }
+
+    private float getSavedFont() {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        float defaultFontSize = body.getTextSize();
+        float fontSize = sharedPref.getFloat(getString(R.string.pref_font_size_key), defaultFontSize);
+        return fontSize;
     }
 
     /*@Override
