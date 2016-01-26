@@ -33,7 +33,7 @@ class CursorDataProviders {
                 selectionArgs = new String[]{query};
                 break;
             case "false":
-                selection = "body LIKE ?";
+                selection = "body LIKE ? ESCAPE '†'";
                 selectionArgs = new String[]{"%"+query+"%"};
                 break;
         }

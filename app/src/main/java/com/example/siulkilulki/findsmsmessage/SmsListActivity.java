@@ -14,8 +14,7 @@ import android.widget.Toast;
 
 
 public class SmsListActivity extends AppCompatActivity {
-    public static final String QUERY_KEY = "query";
-    public static final int SMS_QUERY_LOADER = 0;
+    private static final int SMS_QUERY_LOADER = 0;
 
     // The adapter that binds our data to the ListView
     private SmsAdapter mSmsAdapter;
@@ -29,7 +28,7 @@ public class SmsListActivity extends AppCompatActivity {
         // Bundle containg query string
         String[] bundleData = intent.getStringArrayExtra(MainActivity.PHRASE_KEY);
         Bundle bundle = new Bundle();
-        bundle.putStringArray(QUERY_KEY, bundleData);
+        bundle.putStringArray(Constants.QUERY_KEY, bundleData);
 
         // Initialize the adapter
         // We will pass the adapter a Data only when the

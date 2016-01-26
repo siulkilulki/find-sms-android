@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Telephony;
+import android.text.SpannableString;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -22,18 +23,17 @@ import java.util.List;
 /**
  * Custom Loader for loading sms data
  */
-public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
+class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private static final String TAG = "SmsMmsLoader";
-    private static final String mmsTag = "mmsQuery";
-    Context mContext;
+    private Context mContext;
     private List<Sms> mSmsList;
-
+    private String mQuery;
     private final int CONTACT_ID = 0;
     private final int NAME = 1;
     private final int PHOTO_THUMBNAIL_URI = 2;
     private String[] bundleData;
 
-    public SmsMmsLoader(Context mContext, String[] bundleData) {
+    SmsMmsLoader(Context mContext, String[] bundleData) {
         super(mContext);
         this.mContext = mContext;
         this.bundleData = bundleData;
@@ -48,8 +48,9 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     @Override
     public List<Sms> loadInBackground() {
         Log.d(TAG, "loadInBackground");
-        String query = bundleData[Constants.SEARCH_PHRASE];
-        Uri smsUri, mmsUri;
+        mQuery = bundleData[Constants.SEARCH_PHRASE];
+        String query = correctQuery(mQuery);
+        Uri smsUri;
         //mmsUri = Uri.parse("content://mms/inbox"); TODO: mms are still on todo list
         switch (bundleData[Constants.SWITCHES_STATE]) {
             case ("both"):
@@ -76,6 +77,16 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         return new ArrayList<>();
     }
 
+    /**
+     * Change query String so that we can search for "%" and "_".
+     *
+     * This means the method change every "%" to "\%" and every "_" to "\_"
+     */
+    private String correctQuery(String query) {
+        String newQuery = query.replace("%", "†%");
+        return newQuery.replace("_","†_");
+    }
+
     private List<Sms> getSmsList(CursorDataProviders dataProvider, Cursor smsCursor) {
         mSmsList = new ArrayList<>();
         SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
@@ -92,7 +103,9 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         Date currentDate = new Date();                           // SimpleDateFormat inside loop
         do {                                                     // slows down list loading
             Sms sms = new Sms();
-            sms.body = smsCursor.getString(bodyIndex);
+            String body = smsCursor.getString(bodyIndex);
+            sms.body = body;
+            //sms.bodyColored = ;
             sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
             sms.type = smsCursor.getInt(typeIndex);
             //sms.rawDateSent = smsCursor.getLong(dateSentIndex); //TODO: add later
@@ -112,6 +125,15 @@ public class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         return mSmsList;
     }
 
+    /**
+     *  Colors query within body. Cut body so that the colored query would be displayed in the
+     *  middle of the list body TextView.
+     * @return returns SpannableString containg cutted body from both sides with colored query
+     */
+   /* private SpannableString getColoredBody(String body, String query) {
+
+
+    }*/
 
     private String getDate(long smsTime, SimpleDateFormat months, SimpleDateFormat years,
                            Date currentDate) {

@@ -17,14 +17,13 @@ import java.util.List;
 /**
  *   Helper class to handle all the callbacks that occur when interacting with loaders.
  */
-public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
-    Context mContext;
-    SmsAdapter mSmsAdapter;
-    ListView mListView;
-    public static final String QUERY_KEY = "query";
+class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
+    private Context mContext;
+    private SmsAdapter mSmsAdapter;
+    private ListView mListView;
     public static final String TAG = "SmsLoaderCallbacks";
 
-    public SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter, ListView mListView) {
+    SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter, ListView mListView) {
         this.mContext = mContext;
         this.mSmsAdapter = mSmsAdapter;
         this.mListView = mListView;
@@ -32,7 +31,7 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sm
 
     @Override
     public Loader<List<Sms>> onCreateLoader(int loaderIndex, Bundle args) {
-        String[] bundleData = args.getStringArray(QUERY_KEY);
+        String[] bundleData = args.getStringArray(Constants.QUERY_KEY);
         Log.i(TAG, "In onCreateLoader");
         return new SmsMmsLoader(mContext, bundleData);
     }
@@ -62,6 +61,4 @@ public class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sm
         Log.d(TAG, "Loader reset");
         mSmsAdapter.setData(null);
     }
-
-
 }

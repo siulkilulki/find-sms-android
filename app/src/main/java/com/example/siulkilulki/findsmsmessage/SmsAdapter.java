@@ -20,20 +20,18 @@ import java.util.List;
 /**
  * Custom adapter for listView of queried messages.
  */
-public class SmsAdapter extends BaseAdapter {
+class SmsAdapter extends BaseAdapter {
     private Context mContext;
     private List<Sms> mSmsList;
     private static final String TAG = "SmsAdapter";
 
-    public SmsAdapter(Context mContext) {
+    SmsAdapter(Context mContext) {
         this.mContext = mContext;
         this.mSmsList = new ArrayList<>();
         Log.d(TAG, "SmsAdapter contructor fired");
     }
 
-
-
-    public void setData(List<Sms> smsList) {
+    void setData(List<Sms> smsList) {
         Log.d(TAG, "Data set");
         this.mSmsList = smsList;
     }
@@ -53,7 +51,7 @@ public class SmsAdapter extends BaseAdapter {
         return position;
     }
 
-    static class ViewHolder {
+    private static class ViewHolder {
         TextView body;
         TextView name;
         TextView date;

@@ -33,11 +33,9 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
     }
 
     /**
-     * Create a new instance of SmsDialogFragment, providing "num"
-     * as an argument.
+     * Create a new instance of SmsDialogFragment
      */
-
-    public static SmsDialogFragment newInstance(Sms sms) {
+    static SmsDialogFragment newInstance(Sms sms) {
         SmsDialogFragment f = new SmsDialogFragment();
 
         // Supply num input as an argument.
@@ -47,32 +45,12 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
         return f;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSms = (Sms) getArguments().getSerializable(KEY);
-
         int style = DialogFragment.STYLE_NO_TITLE,
             theme = android.R.style.Theme_Holo_Light_Dialog;
-
-        /*switch ((mNum-1)%6) {
-            1: style = DialogFragment.STYLE_NO_TITLE; break;
-            2: style = DialogFragment.STYLE_NO_FRAME; break;
-            3: style = DialogFragment.STYLE_NO_INPUT; break;
-            4: style = DialogFragment.STYLE_NORMAL; break;
-            5: style = DialogFragment.STYLE_NORMAL; break;
-            6: style = DialogFragment.STYLE_NO_TITLE; break;
-            7: style = DialogFragment.STYLE_NO_FRAME; break;
-            8: style = DialogFragment.STYLE_NORMAL; break;
-        }
-        switch ((mNum-1)%6) {
-            4: theme = android.R.style.Theme_Holo; break;
-            5: theme = android.R.style.Theme_Holo_Light_Dialog; break;
-            6: theme = android.R.style.Theme_Holo_Light; break;
-            7: theme = android.R.style.Theme_Holo_Light_Panel; break;
-            8: theme = android.R.style.Theme_Holo_Light; break;
-        }*/
         setStyle(style, theme);
     }
 
@@ -98,10 +76,17 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
 
         //sets key listner
         getDialog().setOnKeyListener(this);
+
         textSize = getSavedFont();
         applyFont(textSize);
 
         return v;
+    }
+
+    @Override
+    public void onPause() {
+        saveFont(textSize);
+        super.onPause();
     }
 
     @Override
@@ -123,13 +108,8 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
         return false;
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        saveFont(textSize);
-        super.onDismiss(dialog);
-    }
 
-    //TODO: add remembering font settings
+
     private void changeFont(int code) {
         if (code == LARGER) {
             if (textSize < 56) {
@@ -140,7 +120,6 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
                 textSize -= 4;
             }
         }
-        Log.d("FontSize", String.valueOf(textSize));
         applyFont(textSize);
     }
 
@@ -164,12 +143,5 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
         float fontSize = sharedPref.getFloat(getString(R.string.pref_font_size_key), defaultFontSize);
         return fontSize;
     }
-
-    /*@Override
-    public void onResume() {
-        super.onResume();
-        *//*int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
-        getDialog().getWindow().setLayout();*//*
-    }*/
 }
 

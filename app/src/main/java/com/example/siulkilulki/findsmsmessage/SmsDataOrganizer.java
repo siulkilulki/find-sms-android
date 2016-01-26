@@ -8,9 +8,9 @@ import java.util.HashMap;
 /**
  * Created by siulkilulki on 17.01.16.
  */
-public class SmsDataOrganizer {
+class SmsDataOrganizer {
 
-    public String prettifyNumber(String phoneNumber) {
+    String prettifyNumber(String phoneNumber) {
         if (phoneNumber.charAt(0) == '+') {
             phoneNumber = phoneNumber.substring(phoneNumber.length()-9);
         }
@@ -22,7 +22,7 @@ public class SmsDataOrganizer {
      * @param contactsCursor
      * @return Returns HashMap with phones as key, and contact data as value.
      */
-    public HashMap<String, Object[]> hashContacts(Cursor contactsCursor) {
+    HashMap<String, Object[]> hashContacts(Cursor contactsCursor) {
         HashMap<String,Object[]> hashMap = new HashMap<>();
         contactsCursor.moveToFirst();
         int numberIndex = contactsCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);

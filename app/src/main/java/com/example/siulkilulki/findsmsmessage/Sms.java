@@ -1,6 +1,8 @@
 package com.example.siulkilulki.findsmsmessage;
 
 import android.net.Uri;
+import android.text.SpannableString;
+
 import java.io.Serializable;
 
 /**
@@ -16,5 +18,6 @@ public class Sms implements Serializable {
     public long rawDate;
     public long rawDateSent; //TODO: search for it and delete or add later to dialog view
     public String body;
+    public SpannableString bodyColored;
     public Uri photoThumbnailUri;
 }
