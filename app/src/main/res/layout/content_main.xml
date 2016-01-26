@@ -16,10 +16,11 @@
         android:id="@+id/search_label"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/input_search_label"
+        android:text="@string/main_activity_input_search_label"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:textSize="20sp"
+        android:labelFor="@+id/search_input"
         />
 
     <EditText android:id="@+id/search_input"
@@ -28,38 +29,39 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_alignParentTop="@id/search_label"
-        android:layout_alignStart="@+id/search_label"
-        android:layout_alignEnd="@+id/search_label" />
+        android:layout_alignStart="@id/search_label"
+        android:layout_alignEnd="@id/search_label"
+        android:inputType="text"/>
 
     <Switch
         android:id="@+id/inbox_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Inbox"
+        android:text="@string/main_activity_inbox"
         android:textOn="Yes"
         android:textOff="No"
         android:layout_marginTop="44dp"
-        android:layout_below="@+id/search_input"
-        android:layout_alignStart="@+id/search_input"
-        android:layout_alignEnd="@+id/search_input" />
+        android:layout_below="@id/search_input"
+        android:layout_alignStart="@id/search_input"
+        android:layout_alignEnd="@id/search_input" />
 
     <Switch
         android:id="@+id/sent_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sent"
+        android:text="@string/main_activity_sent"
         android:textOn="Yes"
         android:textOff="No"
         android:layout_marginTop="15dp"
-        android:layout_below="@+id/inbox_switch"
-        android:layout_alignStart="@+id/inbox_switch"
-        android:layout_alignEnd="@+id/inbox_switch" />
+        android:layout_below="@id/inbox_switch"
+        android:layout_alignStart="@id/inbox_switch"
+        android:layout_alignEnd="@id/inbox_switch" />
 
     <Switch
         android:id="@+id/regex_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Regex search"
+        android:text="@string/main_activity_complex_search"
         android:textOn="Yes"
         android:textOff="No"
         android:layout_marginTop="15dp"
