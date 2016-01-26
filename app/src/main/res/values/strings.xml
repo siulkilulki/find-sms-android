@@ -7,4 +7,5 @@
     <string name="label_sms_list">Found</string>
     <string name="pref_file_key">com.example.siulkilulki.findsmsmessage.PREF_FILE</string>
     <string name="pref_font_size_key">pref_font_size_key</string>
+    <string name="dialog_back_button">BACK</string>
 </resources>
