@@ -61,7 +61,7 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
         body = (TextView) v.findViewById(R.id.dialog_body);
         date = (TextView) v.findViewById(R.id.dialog_date);
         nameNumber = (TextView) v.findViewById(R.id.dialog_name_number);
-        (body).setText(mSms.body);
+        (body).setText(mSms.bodyColored);
         SimpleDateFormat format = new SimpleDateFormat("d MMM y, HH:mm:ss");
         (date).setText(format.format(mSms.rawDate));
         (nameNumber).setText(mSms.name + " (" + mSms.phoneNr + ")");

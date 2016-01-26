@@ -78,7 +78,7 @@ class SmsAdapter extends BaseAdapter {
     }
 
     private void bindSmsToView(ViewHolder holder, Sms sms){
-        holder.body.setText(sms.body);
+        holder.body.setText(sms.bodyColored);
         holder.date.setText(sms.date);
         setName(holder, sms);
 

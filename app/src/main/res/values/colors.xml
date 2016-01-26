@@ -8,6 +8,6 @@
     <color name="data_color">#0068F0</color>
     <color name="button_text_blue">#2196F3</color>
     <color name="button_focused_blue_background">#E7F4FE</color>
-    <color name="button_pressed_blue_background">#A8D9FF</color>
+    <color name="button_pressed_blue_background">#D6EDFF</color>
     <color name="button_background">#F5F5F5</color>
 </resources>

@@ -3,9 +3,11 @@ package com.example.siulkilulki.findsmsmessage;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.Telephony;
 import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -105,7 +107,7 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
             Sms sms = new Sms();
             String body = smsCursor.getString(bodyIndex);
             sms.body = body;
-            //sms.bodyColored = ;
+            sms.bodyColored = getColoredBody(body, mQuery);
             sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
             sms.type = smsCursor.getInt(typeIndex);
             //sms.rawDateSent = smsCursor.getLong(dateSentIndex); //TODO: add later
@@ -130,10 +132,15 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
      *  middle of the list body TextView.
      * @return returns SpannableString containg cutted body from both sides with colored query
      */
-   /* private SpannableString getColoredBody(String body, String query) {
-
-
-    }*/
+    //TODO: get visible nr of characters
+    private SpannableString getColoredBody(String body, String query) {
+        int startOfColor = body.toLowerCase().indexOf(query.toLowerCase()),
+            endOfColor = startOfColor + query.length();
+        SpannableString coloredBody = new SpannableString(body);
+        //TODO: get color from colors.xml
+        coloredBody.setSpan(new ForegroundColorSpan(Color.parseColor("#FF4081")), startOfColor, endOfColor, 0);
+        return coloredBody;
+    }
 
     private String getDate(long smsTime, SimpleDateFormat months, SimpleDateFormat years,
                            Date currentDate) {
@@ -155,7 +162,6 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         Log.d(TAG, "deliverResult");
         // The Loader has been reset; ignore the result and invalidate the data.
         if (isReset()) {
-            Log.d(TAG, "deliverResult - maybe mistake here");
             releaseResources(data);
             return;
         }
