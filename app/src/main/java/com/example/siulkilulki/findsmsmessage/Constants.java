@@ -7,5 +7,7 @@ abstract class Constants {
     static final int SWITCHES_STATE = 0;
     static final int SEARCH_PHRASE = 1;
     static final int REGEX = 2;
+    static final int DATE_FROM = 3;
+    static final int DATE_TO = 4;
     static final String QUERY_KEY = "query";
 }

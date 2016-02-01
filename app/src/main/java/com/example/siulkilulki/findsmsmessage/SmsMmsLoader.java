@@ -68,10 +68,8 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
                 smsUri = Uri.parse("content://sms");// never goes here
         }
         CursorDataProviders dataProvider = new CursorDataProviders(mContext);
-        Cursor smsCursor = dataProvider.smsQuery(smsUri, query, bundleData[Constants.REGEX]);
+        Cursor smsCursor = dataProvider.smsQuery(smsUri, query, bundleData);
         //Cursor mmsCursor = mmsQuery(mmsUri, query); TODO: mms are still on todo list
-
-        //TODO: move below code to convenient method
 
         if (smsCursor.getCount() != 0) {
             return getSmsList(dataProvider, smsCursor);
@@ -107,7 +105,13 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
             Sms sms = new Sms();
             String body = smsCursor.getString(bodyIndex);
             sms.body = body;
-            sms.bodyColored = getColoredBody(body, mQuery);
+
+            //turn off color in regex aka complex search
+            if (bundleData[Constants.REGEX].equals("true")) {
+                sms.bodyColored = new SpannableString(body);
+            } else if (bundleData[Constants.REGEX].equals("false")) {
+                sms.bodyColored = getColoredBody(body, mQuery);
+            }
             sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
             sms.type = smsCursor.getInt(typeIndex);
             //sms.rawDateSent = smsCursor.getLong(dateSentIndex); //TODO: add later

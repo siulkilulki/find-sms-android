@@ -29,6 +29,7 @@ public class SmsDialogFragment extends DialogFragment implements DialogInterface
     private final static int LARGER = 0;
     private final static int SMALLER = 1;
     private final static String KEY = "sms";
+
     public SmsDialogFragment() {
     }
 

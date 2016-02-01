@@ -3,6 +3,7 @@ package com.example.siulkilulki.findsmsmessage;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -21,19 +22,21 @@ class CursorDataProviders {
      * Queries sms data that matches the given query.
      * @param uri
      * @param query
-     * @param regex
+     * @param bundleData
      * @return Cursor with sms data.
      */
-    Cursor smsQuery(Uri uri, String query, String regex) {
+    Cursor smsQuery(Uri uri, String query, String[] bundleData) {
         String selection = null;
         String[] selectionArgs = null;
-        switch (regex) {
+        switch (bundleData[Constants.REGEX]) {
             case "true":
-                selection = "body GLOB ?";
+                selection = "body GLOB ? AND (date BETWEEN " + bundleData[Constants.DATE_FROM] +
+                        " AND " + bundleData[Constants.DATE_TO] +")";
                 selectionArgs = new String[]{query};
                 break;
             case "false":
-                selection = "body LIKE ? ESCAPE '†'";
+                selection = "(body LIKE ? ESCAPE '†') AND (date BETWEEN "+
+                        bundleData[Constants.DATE_FROM] + " AND "+bundleData[Constants.DATE_TO] +")";
                 selectionArgs = new String[]{"%"+query+"%"};
                 break;
         }

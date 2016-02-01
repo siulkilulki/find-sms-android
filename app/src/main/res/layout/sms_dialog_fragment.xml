@@ -30,7 +30,7 @@
             android:id="@+id/dialog_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textColor="@color/data_color"
+            android:textColor="@color/dialog_data_color"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/dialog_body"
             android:layout_alignEnd="@+id/dialog_body"
