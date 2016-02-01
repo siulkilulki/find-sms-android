@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 /**
  * Created by siulkilulki on 17.01.16.
@@ -72,16 +71,13 @@ class CursorDataProviders {
     // TODO: mmsQuery
      Cursor mmsQuery(Uri uri, String query) {
         Cursor mmsCursor = mContext.getContentResolver().query(uri, null, null, null, null);
-        //Log.i(mmsTag, String.valueOf(mmsCursor.getCount()));
         String[] columnNames = mmsCursor.getColumnNames();
 
         for (String str : columnNames
                 ) {
-            Log.i(TAG,str);
         }
         mmsCursor.moveToFirst();
         do {
-            //Log.i("mms",mmsCursor.);
         } while (mmsCursor.moveToNext());
         return mmsCursor;
     }

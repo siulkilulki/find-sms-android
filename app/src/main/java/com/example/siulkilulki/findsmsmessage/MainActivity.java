@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
         Button fromDate = (Button) findViewById(R.id.button_date_from);
         Button toDate = (Button) findViewById(R.id.button_date_to);
         SimpleDateFormat format = new SimpleDateFormat("d MMMM y");
-        /*Date now = new Date();
-        Date beginning = new Date(0);*/
         fromDate.setText(format.format(new Date(dateFromInMillis)));
         toDate.setText(format.format(new Date(dateToInMillis)));
 
@@ -131,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
                 bundleData[Constants.DATE_TO] = String.valueOf(dateToInMillis);
                 intent.putExtra(PHRASE_KEY, bundleData);
                 startActivity(intent);
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
             }
         });
     }
@@ -173,39 +169,9 @@ public class MainActivity extends AppCompatActivity {
                 toDate.setText(format.format(new Date(dateToInMillis)));
             }
         }
-        String[] getDates() {
-            String[] arrString = new String[2];
-            arrString[0] = String.valueOf(dateFromInMillis);
-            arrString[1] = String.valueOf(dateToInMillis);
-            return arrString;
-        }
     }
     private void showDatePickerDialog(View v, boolean isFromDate) {
         DialogFragment newFragment = DatePickerFragment.newInstance(isFromDate);
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
-
-
-    // TODO: setting not used. Maybe add here info for user about how to query sms
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
 }

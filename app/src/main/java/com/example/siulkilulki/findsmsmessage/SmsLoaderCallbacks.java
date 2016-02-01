@@ -21,7 +21,6 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
     private Context mContext;
     private SmsAdapter mSmsAdapter;
     private ListView mListView;
-    public static final String TAG = "SmsLoaderCallbacks";
 
     SmsLoaderCallbacks(Context mContext, SmsAdapter mSmsAdapter, ListView mListView) {
         this.mContext = mContext;
@@ -32,13 +31,13 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
     @Override
     public Loader<List<Sms>> onCreateLoader(int loaderIndex, Bundle args) {
         String[] bundleData = args.getStringArray(Constants.QUERY_KEY);
-        Log.i(TAG, "In onCreateLoader");
-        return new SmsMmsLoader(mContext, bundleData);
+        return new SmsMmsLoader(mContext, bundleData, mSmsAdapter);
     }
+
+
 
     @Override
     public void onLoadFinished(Loader<List<Sms>> arg0, List<Sms> mSmsList) {
-        Log.i(TAG, (String.valueOf(mSmsList.size())));
         if (mSmsList.size() == 0) {
 
             // if no results (mSmsList list empty) change layout to no_results_view.xml
@@ -48,6 +47,7 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
         }
         mSmsAdapter.setData(mSmsList); // finished loading so i can set the adapters data
         mListView.setAdapter(mSmsAdapter); // bind adapter with view when I'm sure the data is loaded
+        mSmsAdapter.notifyDataSetChanged();
 
 
     }
@@ -58,7 +58,7 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
         // For whatever reason, the Loader's data is now unavailable.
         // Remove any references to the old data by replacing it with
         // a null.
-        Log.d(TAG, "Loader reset");
         mSmsAdapter.setData(null);
+        //mSmsAdapter.notifyDataSetChanged();
     }
 }

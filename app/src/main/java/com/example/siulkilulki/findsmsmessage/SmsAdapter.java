@@ -28,11 +28,9 @@ class SmsAdapter extends BaseAdapter {
     SmsAdapter(Context mContext) {
         this.mContext = mContext;
         this.mSmsList = new ArrayList<>();
-        Log.d(TAG, "SmsAdapter contructor fired");
     }
 
     void setData(List<Sms> smsList) {
-        Log.d(TAG, "Data set");
         this.mSmsList = smsList;
     }
 
@@ -87,21 +85,6 @@ class SmsAdapter extends BaseAdapter {
         } else {
             Picasso.with(mContext).load(R.drawable.ic_face_black_36dp).into(holder.photo);
         }
-
-        // TODO: delete after showing teachers that this is much slower then picasso
-        /*if (sms.contactId != null) {
-            Bitmap bitmap = getPhoto(sms.contactId);
-            if (bitmap != null) {
-                holder.photo.setImageBitmap(bitmap);
-            } else {
-                holder.photo.setImageDrawable(ContextCompat.getDrawable(mContext,
-                        R.drawable.ic_face_black_36dp));
-            }
-        } else {
-            holder.photo.setImageDrawable(ContextCompat.getDrawable(mContext,
-                    R.drawable.ic_face_black_36dp));
-        }*/
-
     }
 
     private void setName(ViewHolder holder, Sms sms) {
@@ -124,34 +107,4 @@ class SmsAdapter extends BaseAdapter {
         }
     }
 
-
-
-    // TODO: delete after showing teachers that this is much slower then picasso
-    /*public Bitmap getPhoto(long contactId) {
-
-
-        Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId);
-        Uri photoUri = Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-
-        Cursor cursor = mContext.getContentResolver().query(photoUri,
-                new String[] {ContactsContract.Contacts.Photo.PHOTO}, null, null, null);
-        if (cursor == null) {
-            return null;
-        }
-        try {
-            if (cursor.moveToFirst()) {
-                byte[] data = cursor.getBlob(0);
-                if (data != null) {
-                    ByteArrayInputStream byteArray = new ByteArrayInputStream(data);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                    return bitmap;
-                    //return new ByteArrayInputStream(data);
-                }
-            }
-        } finally {
-            cursor.close();
-        }
-        return null;
-    }
-*/
 }

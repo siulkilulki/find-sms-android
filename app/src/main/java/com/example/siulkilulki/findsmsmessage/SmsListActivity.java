@@ -42,7 +42,6 @@ public class SmsListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Sms sms =  mSmsAdapter.getItem(position);
-                //Toast.makeText(SmsListActivity.this, sms.body, Toast.LENGTH_LONG).show();
                 showSmsDialog(sms);
             }
         });
@@ -60,9 +59,5 @@ public class SmsListActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         SmsDialogFragment smsDialogFragment = SmsDialogFragment.newInstance(sms);
         smsDialogFragment.show(fm, "fragment_edit_name");
-    }
-    // TODO: method to use when clicked on sms, to be done
-    private void showConversation(Sms sms) {
-
     }
 }

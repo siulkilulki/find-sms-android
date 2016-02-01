@@ -25,7 +25,6 @@
             android:name=".SmsListActivity"
             android:label="@string/label_sms_list"
             android:parentActivityName=".MainActivity"/>
-        <activity android:name=".SmsConversationActivity"></activity>
     </application>
 
 </manifest>

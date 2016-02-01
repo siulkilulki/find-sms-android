@@ -34,11 +34,13 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private final int NAME = 1;
     private final int PHOTO_THUMBNAIL_URI = 2;
     private String[] bundleData;
+    private SmsAdapter mSmsAdpater;
 
-    SmsMmsLoader(Context mContext, String[] bundleData) {
+    SmsMmsLoader(Context mContext, String[] bundleData, SmsAdapter mSmsAdapter) {
         super(mContext);
         this.mContext = mContext;
         this.bundleData = bundleData;
+        this.mSmsAdpater = mSmsAdapter;
         Log.d(TAG, "Constructor fired");
         onContentChanged();
     }
@@ -163,10 +165,9 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
      */
     @Override
     public void deliverResult(List<Sms> data) {
-        Log.d(TAG, "deliverResult");
         // The Loader has been reset; ignore the result and invalidate the data.
         if (isReset()) {
-            releaseResources(data);
+            
             return;
         }
         // Hold a reference to the old data so it doesn't get garbage collected.
@@ -176,38 +177,31 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         // If the Loader is in a started state, deliver the results to the
         // client. The superclass method does this for  us.
         if (isStarted()) {
-            Log.d(TAG, "super.deliverResult");
+            
             super.deliverResult(data);
         }
         if (oldData != data && oldData != null) {
-            releaseResources(oldData);
+            
         }
     }
 
-    //TODO: maybe will use it, so its still here, if not delete this method since it's doesn't
-    // TODO: make sense to release List data
-    private void releaseResources(List<Sms> data) {
-        Log.d(TAG, "releaseResources");
-        //data.close();
-    }
 
     /**
      * Handles a request to start the Loader.
      */
     @Override
     protected void onStartLoading() {
-        Log.d(TAG, "onStartLoading()");
         if (mSmsList != null) {
-            Log.d(TAG, "onStartLoading() deliverResult");
             // Deliver any previously loaded data immediately.
+            
             deliverResult(mSmsList);
         }
         // TODO: Add Obserwer.
         // TODO: Sms intent reciever to automatically update list when recieved
         // That's how we start every AsyncTaskLoader.
         if(takeContentChanged() || mSmsList == null) {
-            Log.d(TAG, "onStartLoading() ForceLoad");
             forceLoad();
+            
         }
     }
 
@@ -217,8 +211,9 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     @Override
     protected void onStopLoading() {
         // Attempt to cancel the current load task if possible.
-        Log.d(TAG, "onStopLoading()");
+        
         cancelLoad();
+        
     }
 
     /**
@@ -228,14 +223,15 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
      */
     @Override
     protected void onReset() {
-        Log.d(TAG, "onReset()");
-        // Ensure the loader has been stopped. Stops the loader
-        onStopLoading();
 
+        // Ensure the loader has been stopped. Stops the loader
+        
+        onStopLoading();
+        
         // At this point we can release the resources associated with 'mData'.
         if (mSmsList != null) {
-            releaseResources(mSmsList);
             mSmsList = null;
+            
         }
     }
 
@@ -248,11 +244,10 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
      */
     @Override
     public void onCanceled(List<Sms> data) {
-        Log.d(TAG, "onCanceled()");
         // Attempt to cancel the current asynchronous load.
+        
         super.onCanceled(data);
         // The load has been canceled, so we should release the resources
         // associated with 'data'.
-        releaseResources(data);
     }
 }

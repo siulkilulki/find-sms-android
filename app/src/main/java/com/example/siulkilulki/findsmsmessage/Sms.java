@@ -18,6 +18,6 @@ public class Sms implements Serializable {
     public long rawDate;
     public long rawDateSent; //TODO: search for it and delete or add later to dialog view
     public String body;
-    public SpannableString bodyColored;
+    public transient SpannableString bodyColored;
     public Uri photoThumbnailUri;
 }
