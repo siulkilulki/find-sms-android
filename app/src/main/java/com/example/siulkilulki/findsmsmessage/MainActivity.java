@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 public class MainActivity extends AppCompatActivity {
     final static String PHRASE_KEY = "query";
     private boolean inboxSwitchState = true; // starting value
-    private boolean sentSwitchState = false; // starting value
+    private boolean sentSwitchState = true; // starting value
     private boolean regexSwitchState = false; // starting value
     protected static long dateFromInMillis = (new Date(0).getTime());
     protected static long dateToInMillis = (new Date().getTime());
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         final Switch sentSwitch = (Switch) findViewById(R.id.sent_switch);
         final Switch regexSwitch = (Switch) findViewById(R.id.regex_switch);
         inboxSwitch.setChecked(true);
+        sentSwitch.setChecked(true);
 
         inboxSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
