@@ -1,131 +1,45 @@
-sms data
-
-_id 6018 index = 0
- thread_id 3 index = 1
- address +48726609184 index = 2
- person null index = 3
- date 1452762658333 index = 4
- date_sent 1452762631000 index = 5
- protocol 0 index = 6
- read 1 index = 7
- status -1 index = 8
- type 1 index = 9
- reply_path_present 0 index = 10
- subject null index = 11
- body Ok :-) index = 12
- service_center +48601000320 index = 13
- locked 0 index = 14
- error_code 0 index = 15
- seen 1 index = 16
- deletable 0 index = 17
- hidden 0 index = 18
- group_id null index = 19
- group_type null index = 20
- delivery_date null index = 21
- app_id 0 index = 22
- msg_id 0 index = 23
- callback_number null index = 24
- reserved 0 index = 25
- pri 0 index = 26
- teleservice_id 0 index = 27
- link_url null index = 28
- svc_cmd 0 index = 29
- svc_cmd_content null index = 30
- roam_pending 0 index = 31
- sim_slot 0 index = 32
- sim_imsi null index = 33
- spam_report 0 index = 34
-
-
-single contact data
-
-display_name_reverse
-times_contacted
-custom_ringtone
-has_phone_number
-is_sim
-label
-number
-type
-lookup
-sec_custom_vibration
-last_time_contacted
-data_id
-display_name
-in_visible_group
-_id
-starred
-photo_uri
-sec_custom_alert
-normalized_number
-photo_thumb_uri
-photo_id
-send_to_voicemail
-
-contacts data
-
-
-Process: com.example.siulkilulki.findsmsmessage, PID: 23953
-                                                   java.lang.RuntimeException: Parcelable encountered IOException writing serializable object (name = com.example.siulkilulki.findsmsmessage.Sms)
-                                                       at android.os.Parcel.writeSerializable(Parcel.java:1323)
-                                                       at android.os.Parcel.writeValue(Parcel.java:1271)
-                                                       at android.os.Parcel.writeArrayMapInternal(Parcel.java:618)
-                                                       at android.os.Bundle.writeToParcel(Bundle.java:1692)
-                                                       at android.os.Parcel.writeBundle(Parcel.java:643)
-                                                       at android.support.v4.app.FragmentState.writeToParcel(Fragment.java:137)
-                                                       at android.os.Parcel.writeTypedArray(Parcel.java:1140)
-                                                       at android.support.v4.app.FragmentManagerState.writeToParcel(FragmentManager.java:385)
-                                                       at android.os.Parcel.writeParcelable(Parcel.java:1292)
-                                                       at android.os.Parcel.writeValue(Parcel.java:1211)
-                                                       at android.os.Parcel.writeArrayMapInternal(Parcel.java:618)
-                                                       at android.os.Bundle.writeToParcel(Bundle.java:1692)
-                                                       at android.os.Parcel.writeBundle(Parcel.java:643)
-                                                       at android.app.ActivityManagerProxy.activityStopped(ActivityManagerNative.java:2775)
-                                                       at android.app.ActivityThread$StopInfo.run(ActivityThread.java:3450)
-                                                       at android.os.Handler.handleCallback(Handler.java:733)
-                                                       at android.os.Handler.dispatchMessage(Handler.java:95)
-                                                       at android.os.Looper.loop(Looper.java:146)
-                                                       at android.app.ActivityThread.main(ActivityThread.java:5679)
-                                                       at java.lang.reflect.Method.invokeNative(Native Method)
-                                                       at java.lang.reflect.Method.invoke(Method.java:515)
-                                                       at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:1291)
-                                                       at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1107)
-                                                       at de.robv.android.xposed.XposedBridge.main(XposedBridge.java:132)
-                                                       at dalvik.system.NativeStart.main(Native Method)
-                                                    Caused by: java.io.NotSerializableException: android.text.SpannableString
-                                                       at java.io.ObjectOutputStream.writeNewObject(ObjectOutputStream.java:1366)
-                                                       at java.io.ObjectOutputStream.writeObjectInternal(ObjectOutputStream.java:1673)
-                                                       at java.spannaleio.ObjectOutputStream.writeObject(ObjectOutputStream.java:1519)
-                                                       at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:1483)
-                                                       at java.io.ObjectOutputStream.writeFieldValues(ObjectOutputStream.java:981)
-                                                       at java.io.ObjectOutputStream.defaultWriteObject(ObjectOutputStream.java:368)
-                                                       at java.io.ObjectOutputStream.writeHierarchy(ObjectOutputStream.java:1076)
-                                                       at java.io.ObjectOutputStream.writeNewObject(ObjectOutputStream.java:1406)
-                                                       at java.io.ObjectOutputStream.writeObjectInternal(ObjectOutputStream.java:1673)
-                                                       at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:1519)
-                                                       at java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:1483)
-                                                       at android.os.Parcel.writeSerializable(Parcel.java:1318)
-                                                       at android.os.Parcel.writeValue(Parcel.java:1271) 
-                                                       at android.os.Parcel.writeArrayMapInternal(Parcel.java:618) 
-                                                       at android.os.Bundle.writeToParcel(Bundle.java:1692) 
-                                                       at android.os.Parcel.writeBundle(Parcel.java:643) 
-                                                       at android.support.v4.app.FragmentState.writeToParcel(Fragment.java:137) 
-                                                       at android.os.Parcel.writeTypedArray(Parcel.java:1140) 
-                                                       at android.support.v4.app.FragmentManagerState.writeToParcel(FragmentManager.java:385) 
-                                                       at android.os.Parcel.writeParcelable(Parcel.java:1292) 
-                                                       at android.os.Parcel.writeValue(Parcel.java:1211) 
-                                                       at android.os.Parcel.writeArrayMapInternal(Parcel.java:618) 
-                                                       at android.os.Bundle.writeToParcel(Bundle.java:1692) 
-                                                       at android.os.Parcel.writeBundle(Parcel.java:643) 
-                                                       at android.app.ActivityManagerProxy.activityStopped(ActivityManagerNative.java:2775) 
-                                                       at android.app.ActivityThread$StopInfo.run(ActivityThread.java:3450) 
-                                                       at android.os.Handler.handleCallback(Handler.java:733) 
-                                                       at android.os.Handler.dispatchMessage(Handler.java:95) 
-                                                       at android.os.Looper.loop(Looper.java:146) 
-                                                       at android.app.ActivityThread.main(ActivityThread.java:5679) 
-                                                       at java.lang.reflect.Method.invokeNative(Native Method) 
-                                                       at java.lang.reflect.Method.invoke(Method.java:515) not
-
-
-                                                     java.lang.IllegalStateException: The content of the adapter has changed but ListView did not receive a notification. Make sure the content of your adapter is not modified from a background thread, but only from the UI thread. Make sure your adapter calls notifyDataSetChanged() when its content changes. [in ListView(2131493002, class android.widget.ListView) with Adapter(class com.example.siulkilulki.findsmsmessage.SmsAdapter)]
-                                                                                                                                                 a                                                                   jav
+02-24 14:55:39.805 1662-1662/com.example.siulkilulki.findsmsmessage E/AndroidRuntime: FATAL EXCEPTION: main
+                                                                                      Process: com.example.siulkilulki.findsmsmessage, PID: 1662
+                                                                                      java.lang.IllegalStateException: The content of the adapter has changed but ListView did not receive a notification. Make sure the content of your adapter is not modified from a background thread, but only from the UI thread. Make sure your adapter calls notifyDataSetChanged() when its content changes. [in ListView(2131493002, class android.widget.ListView) with Adapter(class com.example.siulkilulki.findsmsmessage.SmsAdapter)]
+                                                                                          at android.widget.ListView.layoutChildren(ListView.java:1566)
+                                                                                          at android.widget.AbsListView.onLayout(AbsListView.java:2601)
+                                                                                          at android.view.View.layout(View.java:15855)
+                                                                                          at android.view.ViewGroup.layout(ViewGroup.java:4885)
+                                                                                          at android.widget.FrameLayout.layoutChildren(FrameLayout.java:453)
+                                                                                          at android.widget.FrameLayout.onLayout(FrameLayout.java:388)
+                                                                                          at android.view.View.layout(View.java:15855)
+                                                                                          at android.view.ViewGroup.layout(ViewGroup.java:4885)
+                                                                                          at android.support.v7.widget.ActionBarOverlayLayout.onLayout(ActionBarOverlayLayout.java:435)
+                                                                                          at android.view.View.layout(View.java:15855)
+                                                                                          at android.view.ViewGroup.layout(ViewGroup.java:4885)
+                                                                                          at android.widget.FrameLayout.layoutChildren(FrameLayout.java:453)
+                                                                                          at android.widget.FrameLayout.onLayout(FrameLayout.java:388)
+                                                                                          at android.view.View.layout(View.java:15855)
+                                                                                          at android.view.ViewGroup.layout(ViewGroup.java:4885)
+                                                                                          at android.widget.LinearLayout.setChildFrame(LinearLayout.java:1677)
+                                                                                          at android.widget.LinearLayout.layoutVertical(LinearLayout.java:1531)
+                                                                                          at android.widget.LinearLayout.onLayout(LinearLayout.java:1440)
+                                                                                          at android.view.View.layout(View.java:15855)
+                                                                                          at android.view.ViewGroup.layout(ViewGroup.java:4885)
+                                                                                          at android.widget.FrameLayout.layoutChildren(FrameLayout.java:453)
+                                                                                          at android.widget.FrameLayout.onLayout(FrameLayout.java:388)
+                                                                                          at android.view.View.layout(View.java:15855)
+                                                                                          at android.view.ViewGroup.layout(ViewGroup.java:4885)
+                                                                                          at android.view.ViewRootImpl.performLayout(ViewRootImpl.java:2376)
+                                                                                          at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:2089)
+                                                                                          at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:1264)
+                                                                                          at android.view.ViewRootImpl$TraversalRunnable.run(ViewRootImpl.java:6616)
+                                                                                          at android.view.Choreographer$CallbackRecord.run(Choreographer.java:813)
+                                                                                          at android.view.Choreographer.doCallbacks(Choreographer.java:613)
+                                                                                          at android.view.Choreographer.doFrame(Choreographer.java:583)
+                                                                                          at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:799)
+                                                                                          at android.os.Handler.handleCallback(Handler.java:733)
+                                                                                          at android.os.Handler.dispatchMessage(Handler.java:95)
+                                                                                          at android.os.Looper.loop(Looper.java:146)
+                                                                                          at android.app.ActivityThread.main(ActivityThread.java:5679)
+                                                                                          at java.lang.reflect.Method.invokeNative(Native Method)
+                                                                                          at java.lang.reflect.Method.invoke(Method.java:515)
+                                                                                          at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:1291)
+                                                                                          at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1107)
+                                                                                          at de.robv.android.xposed.XposedBridge.main(XposedBridge.java:132)
+                                                                                          at dalvik.system.NativeStart.main(Native Method)

@@ -38,6 +38,7 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
 
     @Override
     public void onLoadFinished(Loader<List<Sms>> arg0, List<Sms> mSmsList) {
+        Log.d("load","load finished");
         if (mSmsList.size() == 0) {
 
             // if no results (mSmsList list empty) change layout to no_results_view.xml
@@ -47,7 +48,7 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
         }
         mSmsAdapter.setData(mSmsList); // finished loading so i can set the adapters data
         mListView.setAdapter(mSmsAdapter); // bind adapter with view when I'm sure the data is loaded
-        mSmsAdapter.notifyDataSetChanged();
+
 
 
     }
@@ -59,6 +60,5 @@ class SmsLoaderCallbacks implements LoaderManager.LoaderCallbacks<List<Sms>> {
         // Remove any references to the old data by replacing it with
         // a null.
         mSmsAdapter.setData(null);
-        //mSmsAdapter.notifyDataSetChanged();
     }
 }

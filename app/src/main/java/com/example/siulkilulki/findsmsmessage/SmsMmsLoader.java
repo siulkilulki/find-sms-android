@@ -35,6 +35,7 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     private final int PHOTO_THUMBNAIL_URI = 2;
     private String[] bundleData;
     private SmsAdapter mSmsAdpater;
+    private int dataCount = 0;
 
     SmsMmsLoader(Context mContext, String[] bundleData, SmsAdapter mSmsAdapter) {
         super(mContext);
@@ -72,12 +73,13 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         CursorDataProviders dataProvider = new CursorDataProviders(mContext);
         Cursor smsCursor = dataProvider.smsQuery(smsUri, query, bundleData);
         //Cursor mmsCursor = mmsQuery(mmsUri, query); TODO: mms are still on todo list
-
-        if (smsCursor.getCount() != 0) {
+        dataCount = smsCursor.getCount();
+        if (dataCount != 0) {
             return getSmsList(dataProvider, smsCursor);
         }
         return new ArrayList<>();
     }
+
 
     /**
      * Change query String so that we can search for "%" and "_".
@@ -90,6 +92,8 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     }
 
     private List<Sms> getSmsList(CursorDataProviders dataProvider, Cursor smsCursor) {
+        Log.d(TAG,"getSms");
+        int i = 0;
         mSmsList = new ArrayList<>();
         SmsDataOrganizer dataOrganizer = new SmsDataOrganizer();
         Cursor contactsCursor = dataProvider.getContacts();
@@ -99,7 +103,6 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
         int phoneIndex = smsCursor.getColumnIndex(Telephony.Sms.ADDRESS);
         int typeIndex = smsCursor.getColumnIndex(Telephony.Sms.TYPE);
         int dateIndex = smsCursor.getColumnIndex(Telephony.Sms.DATE);
-        int dateSentIndex = smsCursor.getColumnIndex(Telephony.Sms.DATE_SENT);
         SimpleDateFormat months = new SimpleDateFormat("d MMM"); // creating here becouse
         SimpleDateFormat years = new SimpleDateFormat("d MMM y");// creating many intances of
         Date currentDate = new Date();                           // SimpleDateFormat inside loop
@@ -116,7 +119,6 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
             }
             sms.phoneNr = dataOrganizer.prettifyNumber(smsCursor.getString(phoneIndex));
             sms.type = smsCursor.getInt(typeIndex);
-            //sms.rawDateSent = smsCursor.getLong(dateSentIndex); //TODO: add later
             long rawDate = smsCursor.getLong(dateIndex);
             sms.rawDate = rawDate;
             sms.date = getDate(rawDate, months, years, currentDate);
@@ -127,9 +129,18 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
                 String photoUri = (String) hashedContact[PHOTO_THUMBNAIL_URI];
                 sms.photoThumbnailUri = (photoUri != null) ? Uri.parse(photoUri) : null;
             }
+            if (isLoadInBackgroundCanceled()){
+                Log.d(TAG,"load in Background canceled");
+            }
+            i++;
+            Log.d(TAG,String.valueOf(i));
+            if (isAbandoned()) {
+                Log.d(TAG,"load abandoned");
+            }
             mSmsList.add(sms);
         } while (smsCursor.moveToNext());
         smsCursor.close();
+        Log.d(TAG,"cursor closed");
         return mSmsList;
     }
 
@@ -167,21 +178,19 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     public void deliverResult(List<Sms> data) {
         // The Loader has been reset; ignore the result and invalidate the data.
         if (isReset()) {
-            
+            Log.d(TAG,"deliver result Loader reset");
             return;
         }
         // Hold a reference to the old data so it doesn't get garbage collected.
-        // We must protect it until the new data has been delivered.
-        List<Sms> oldData = data;
-        mSmsList = data;
+
+        /*List<Sms> oldData = data;
+        mSmsList = data;*/
         // If the Loader is in a started state, deliver the results to the
         // client. The superclass method does this for  us.
+        Log.d(TAG,"deliver results");
         if (isStarted()) {
-            
+            Log.d(TAG,"deliver Results isStarted");
             super.deliverResult(data);
-        }
-        if (oldData != data && oldData != null) {
-            
         }
     }
 
@@ -191,17 +200,20 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
      */
     @Override
     protected void onStartLoading() {
-        if (mSmsList != null) {
+        Log.d(TAG,"onStartLoading");
+        if (mSmsList != null && dataCount == mSmsList.size()) {
             // Deliver any previously loaded data immediately.
-            
+            Log.d(TAG, "onStartLoading not null");
+            //forceLoad();
             deliverResult(mSmsList);
+            return;
         }
         // TODO: Add Obserwer.
         // TODO: Sms intent reciever to automatically update list when recieved
         // That's how we start every AsyncTaskLoader.
         if(takeContentChanged() || mSmsList == null) {
+            Log.d(TAG, "onStartLoading forceLoad");
             forceLoad();
-            
         }
     }
 
@@ -211,7 +223,7 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     @Override
     protected void onStopLoading() {
         // Attempt to cancel the current load task if possible.
-        
+        Log.d(TAG,"onStopLoading");
         cancelLoad();
         
     }
@@ -225,13 +237,12 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     protected void onReset() {
 
         // Ensure the loader has been stopped. Stops the loader
-        
+        Log.d(TAG,"onReset");
         onStopLoading();
         
-        // At this point we can release the resources associated with 'mData'.
+        // At this point we can release the resources associated with 'mSmsList'.
         if (mSmsList != null) {
             mSmsList = null;
-            
         }
     }
 
@@ -245,7 +256,10 @@ class SmsMmsLoader extends AsyncTaskLoader<List<Sms>> {
     @Override
     public void onCanceled(List<Sms> data) {
         // Attempt to cancel the current asynchronous load.
-        
+        Log.d(TAG,"onCanceled");
+        if (mSmsList != null && dataCount == mSmsList.size()) {
+            deliverResult(mSmsList);
+        }
         super.onCanceled(data);
         // The load has been canceled, so we should release the resources
         // associated with 'data'.
