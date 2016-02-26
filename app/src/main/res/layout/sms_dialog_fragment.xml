@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
     <ScrollView
         android:id="@+id/textScrollView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -39,27 +40,31 @@
                 android:layout_marginTop="10dp"
                 android:layout_below="@+id/dialog_body"
                 android:layout_alignEnd="@+id/dialog_body"
-                android:textIsSelectable="true"/>
+                android:textIsSelectable="true"
+                android:layout_marginBottom="5dp"/>
         </RelativeLayout>
     </ScrollView>
-    <View
-        android:id="@+id/divider_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/line"
-        android:layout_below="@+id/textScrollView"
-        />
-    <Button
-        android:id="@+id/dialog_back_button"
+    <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_back_button"
-        android:textStyle="bold"
-        android:textColor="@color/button_text_blue"
-        android:background="@drawable/button_background"
-        android:layout_gravity="center_horizontal"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_below="@id/divider_line"
-        android:layout_centerHorizontal="true" />
-</RelativeLayout>
+        android:orientation="vertical">
+        <View
+            android:id="@+id/divider_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line"
+            />
+        <Button
+            android:id="@+id/dialog_back_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_back_button"
+            android:textStyle="bold"
+            android:textColor="@color/button_text_blue"
+            android:background="@drawable/button_background"
+            android:layout_gravity="center_horizontal"
+            style="?android:attr/borderlessButtonStyle" />
+    </LinearLayout>
+
+</LinearLayout>
